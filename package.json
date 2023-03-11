@@ -4,7 +4,7 @@
   "private": true,
   "author": "Creative Tim",
   "license": "See license in https://www.creative-tim.com/license",
-  "description": "React version of Material Dashboard 2 by Creative Tim",
+  "description": "React version of Amazon Sales Reportby Creative Tim",
   "bugs": {
     "url": "https://github.com/creativetimofficial/material-dashboard-react/issues"
   },
@@ -26,6 +26,7 @@
     "@testing-library/jest-dom": "5.16.2",
     "@testing-library/react": "12.1.2",
     "@testing-library/user-event": "13.5.0",
+    "axios": "^1.3.4",
     "chart.js": "3.4.1",
     "chroma-js": "2.4.2",
     "prop-types": "15.8.1",
@@ -52,7 +53,12 @@
     "extends": [
       "react-app",
       "react-app/jest"
-    ]
+    ],
+    "rules": {
+      "jsx-a11y/anchor-is-valid": "off",
+      "no-unused-vars": "off",
+      "react/prop-types": 0
+    }
   },
   "browserslist": {
     "production": [

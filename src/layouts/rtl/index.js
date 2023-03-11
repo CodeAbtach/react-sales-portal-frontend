@@ -1,27 +1,14 @@
-/**
-=========================================================
-* Material Dashboard 2 React - v2.1.0
-=========================================================
 
-* Product Page: https://www.creative-tim.com/product/material-dashboard-react
-* Copyright 2022 Creative Tim (https://www.creative-tim.com)
-
-Coded by www.creative-tim.com
-
- =========================================================
-
-* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-*/
 
 import { useEffect } from "react";
 
 // @mui material components
 import Grid from "@mui/material/Grid";
 
-// Material Dashboard 2 React components
+// Amazon Sales ReportReact components
 import MDBox from "components/MDBox";
 
-// Material Dashboard 2 React example components
+// Amazon Sales ReportReact example components
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
 import DashboardNavbar from "examples/Navbars/DashboardNavbar";
 import Footer from "examples/Footer";
@@ -37,7 +24,7 @@ import reportsLineChartData from "layouts/rtl/data/reportsLineChartData";
 import Projects from "layouts/rtl/components/Projects";
 import OrdersOverview from "layouts/rtl/components/OrdersOverview";
 
-// Material Dashboard 2 React contexts
+// Amazon Sales ReportReact contexts
 import { useMaterialUIController, setDirection } from "context";
 
 function RTL() {

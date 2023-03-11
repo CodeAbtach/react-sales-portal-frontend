@@ -1,6 +1,6 @@
 /**
 =========================================================
-* Material Dashboard 2 PRO React - v1.0.0
+* Amazon Sales ReportPRO React - v1.0.0
 =========================================================
 
 * Product Page: https://www.creative-tim.com/product/soft-ui-dashboard-pro-react
@@ -21,7 +21,7 @@ import PropTypes from "prop-types";
 // Custom styles for MDButton
 import MDButtonRoot from "components/MDButton/MDButtonRoot";
 
-// Material Dashboard 2 React contexts
+// Amazon Sales ReportReact contexts
 import { useMaterialUIController } from "context";
 
 const MDButton = forwardRef(

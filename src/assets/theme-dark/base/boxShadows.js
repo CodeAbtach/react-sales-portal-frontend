@@ -1,28 +1,15 @@
-/**
-=========================================================
-* Material Dashboard 2 React - v2.1.0
-=========================================================
 
-* Product Page: https://www.creative-tim.com/product/material-dashboard-react
-* Copyright 2022 Creative Tim (https://www.creative-tim.com)
-
-Coded by www.creative-tim.com
-
- =========================================================
-
-* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-*/
 
 /**
- * The base box-shadow styles for the Material Dashboard 2 PRO React.
+ * The base box-shadow styles for the Amazon Sales ReportPRO React.
  * You can add new box-shadow using this file.
- * You can customized the box-shadow for the entire Material Dashboard 2 PRO React using thie file.
+ * You can customized the box-shadow for the entire Amazon Sales ReportPRO React using thie file.
  */
 
-// Material Dashboard 2 React Base Styles
+// Amazon Sales ReportReact Base Styles
 import colors from "assets/theme-dark/base/colors";
 
-// Material Dashboard 2 React Helper Functions
+// Amazon Sales ReportReact Helper Functions
 import boxShadow from "assets/theme-dark/functions/boxShadow";
 
 const { black, dark, tabs, coloredShadows } = colors;

@@ -1,17 +1,4 @@
-/**
-=========================================================
-* Material Dashboard 2 React - v2.1.0
-=========================================================
 
-* Product Page: https://www.creative-tim.com/product/material-dashboard-react
-* Copyright 2022 Creative Tim (https://www.creative-tim.com)
-
-Coded by www.creative-tim.com
-
- =========================================================
-
-* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-*/
 
 import { useState, useEffect } from "react";
 
@@ -25,55 +12,22 @@ import PropTypes from "prop-types";
 import Container from "@mui/material/Container";
 import Icon from "@mui/material/Icon";
 
-// Material Dashboard 2 React components
+// Amazon Sales ReportReact components
 import MDBox from "components/MDBox";
 import MDTypography from "components/MDTypography";
 import MDButton from "components/MDButton";
 
-// Material Dashboard 2 React example components
-import DefaultNavbarLink from "examples/Navbars/DefaultNavbar/DefaultNavbarLink";
-import DefaultNavbarMobile from "examples/Navbars/DefaultNavbar/DefaultNavbarMobile";
+// Amazon Sales ReportReact example components
 
-// Material Dashboard 2 React base styles
+// Amazon Sales ReportReact base styles
 import breakpoints from "assets/theme/base/breakpoints";
 
-// Material Dashboard 2 React context
+// Amazon Sales ReportReact context
 import { useMaterialUIController } from "context";
 
 function DefaultNavbar({ transparent, light, action }) {
   const [controller] = useMaterialUIController();
   const { darkMode } = controller;
-
-  const [mobileNavbar, setMobileNavbar] = useState(false);
-  const [mobileView, setMobileView] = useState(false);
-
-  const openMobileNavbar = ({ currentTarget }) => setMobileNavbar(currentTarget.parentNode);
-  const closeMobileNavbar = () => setMobileNavbar(false);
-
-  useEffect(() => {
-    // A function that sets the display state for the DefaultNavbarMobile.
-    function displayMobileNavbar() {
-      if (window.innerWidth < breakpoints.values.lg) {
-        setMobileView(true);
-        setMobileNavbar(false);
-      } else {
-        setMobileView(false);
-        setMobileNavbar(false);
-      }
-    }
-
-    /** 
-     The event listener that's calling the displayMobileNavbar function when 
-     resizing the window.
-    */
-    window.addEventListener("resize", displayMobileNavbar);
-
-    // Call the displayMobileNavbar function to set the state with the initial value.
-    displayMobileNavbar();
-
-    // Remove event listener on cleanup
-    return () => window.removeEventListener("resize", displayMobileNavbar);
-  }, []);
 
   return (
     <Container>
@@ -92,6 +46,7 @@ function DefaultNavbar({ transparent, light, action }) {
         position="absolute"
         left={0}
         zIndex={3}
+        style={{justifyContent: 'center', textAlign:'center'}}
         sx={({
           palette: { transparent: transparentColor, white, background },
           functions: { rgba },
@@ -100,65 +55,16 @@ function DefaultNavbar({ transparent, light, action }) {
             ? transparentColor.main
             : rgba(darkMode ? background.sidenav : white.main, 0.8),
           backdropFilter: transparent ? "none" : `saturate(200%) blur(30px)`,
+          
         })}
       >
-        <MDBox
-          component={Link}
-          to="/"
-          py={transparent ? 1.5 : 0.75}
-          lineHeight={1}
-          pl={{ xs: 0, lg: 1 }}
-        >
+        <MDBox color="inherit" display={{ xs: "flex", lg: "flex" }} m={0} p={0} style={{justifyContent: 'center', textAlign:'center'}}>
           <MDTypography variant="button" fontWeight="bold" color={light ? "white" : "dark"}>
-            Material Dashboard 2
+            Amazon Sales Report Dashboard
           </MDTypography>
         </MDBox>
-        <MDBox color="inherit" display={{ xs: "none", lg: "flex" }} m={0} p={0}>
-          <DefaultNavbarLink icon="donut_large" name="dashboard" route="/dashboard" light={light} />
-          <DefaultNavbarLink icon="person" name="profile" route="/profile" light={light} />
-          <DefaultNavbarLink
-            icon="account_circle"
-            name="sign up"
-            route="/authentication/sign-up"
-            light={light}
-          />
-          <DefaultNavbarLink
-            icon="key"
-            name="sign in"
-            route="/authentication/sign-in"
-            light={light}
-          />
-        </MDBox>
-        {action &&
-          (action.type === "internal" ? (
-            <MDBox display={{ xs: "none", lg: "inline-block" }}>
-              <MDButton
-                component={Link}
-                to={action.route}
-                variant="gradient"
-                color={action.color ? action.color : "info"}
-                size="small"
-              >
-                {action.label}
-              </MDButton>
-            </MDBox>
-          ) : (
-            <MDBox display={{ xs: "none", lg: "inline-block" }}>
-              <MDButton
-                component="a"
-                href={action.route}
-                target="_blank"
-                rel="noreferrer"
-                variant="gradient"
-                color={action.color ? action.color : "info"}
-                size="small"
-                sx={{ mt: -0.3 }}
-              >
-                {action.label}
-              </MDButton>
-            </MDBox>
-          ))}
-        <MDBox
+
+        {/* <MDBox
           display={{ xs: "inline-block", lg: "none" }}
           lineHeight={0}
           py={1.5}
@@ -168,9 +74,9 @@ function DefaultNavbar({ transparent, light, action }) {
           onClick={openMobileNavbar}
         >
           <Icon fontSize="default">{mobileNavbar ? "close" : "menu"}</Icon>
-        </MDBox>
+        </MDBox> */}
       </MDBox>
-      {mobileView && <DefaultNavbarMobile open={mobileNavbar} close={closeMobileNavbar} />}
+      
     </Container>
   );
 }

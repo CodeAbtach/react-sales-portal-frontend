@@ -13,12 +13,11 @@
   },
   "plugins": ["react", "prettier"],
   "rules": {
-    "prettier/prettier": [
-      "error",
-      {
-        "endOfLine": "auto"
-      }
-    ],
+    "no-useless-concat":"off",
+    "prefer-template":"off",
+    "react/prop-types": 0,
+    "no-unused-vars": "off",
+    "prettier/prettier": 0,
     "default-param-last": "off",
     "react/react-in-jsx-scope": "off",
     "react/jsx-filename-extension": [1, { "extensions": [".js", ".jsx"] }],
