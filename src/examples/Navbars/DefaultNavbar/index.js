@@ -59,8 +59,8 @@ function DefaultNavbar({ transparent, light, action }) {
         })}
       >
         <MDBox color="inherit" display={{ xs: "flex", lg: "flex" }} m={0} p={0} style={{justifyContent: 'center', textAlign:'center'}}>
-          <MDTypography variant="button" fontWeight="bold" color={light ? "white" : "dark"}>
-            Amazon Sales Report Dashboard
+          <MDTypography variant="h6" fontWeight="bold" color={light ? "white" : "dark"}>
+            AMAZON SALES REPORT DASHBOARD
           </MDTypography>
         </MDBox>
 

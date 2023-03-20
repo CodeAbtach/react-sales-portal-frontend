@@ -30,6 +30,7 @@ import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
 import DataTable from "examples/Tables/DataTable";
+import { Dna, InfinitySpin } from 'react-loader-spinner'
 
 function Dashboard() {
 
@@ -38,6 +39,8 @@ function Dashboard() {
   const [order, setOrderData] = useState([])
   const [shipment, setShipmentData] = useState([])
   const [products, setProductsData] = useState([])
+  const [loader, setLoader] = useState(false)
+  
 
 
   const Columns = [
@@ -71,7 +74,15 @@ function Dashboard() {
 
 
   const handleChange = (event) => {
+    setLoader(true)
     setDate(event.target.value);
+    closeLoaderIn5Seconds()
+  };
+
+  const closeLoaderIn5Seconds = () => {
+    setTimeout(() => {
+      setLoader(false);
+    }, 1500);
   };
   var re = new RegExp('^-?\\d+(?:\.\\d{0,' + (2 || -1) + '})?');
   useEffect(() => {
@@ -224,6 +235,7 @@ function Dashboard() {
           <MenuItem value={3}>Month</MenuItem>
         </Select>
       </FormControl>
+
       <MDBox py={3}>
         <Grid container spacing={3}>
           <Grid item xs={12} md={6} lg={3}>
@@ -232,7 +244,14 @@ function Dashboard() {
                 color="dark"
                 icon="shopping_basket"
                 title="Orders"
-                count={result}
+                count={loader ? <Dna
+                  visible={true}
+                  height="60"
+                  width="60"
+                  ariaLabel="dna-loading"
+                  wrapperStyle={{}}
+                  wrapperClass="dna-wrapper"
+                /> : result}
                 percentage={{
                   color: "success",
                   amount: "",
@@ -247,7 +266,14 @@ function Dashboard() {
               <ComplexStatisticsCard
                 icon="trending_up"
                 title="Sales"
-                count={totalSales ? '$' + parseFloat(totalSales.toString().match(re)[0]).toLocaleString() : "$0"}
+                count={loader ? <Dna
+                  visible={true}
+                  height="60"
+                  width="60"
+                  ariaLabel="dna-loading"
+                  wrapperStyle={{}}
+                  wrapperClass="dna-wrapper"
+                /> : totalSales ? '$' + parseFloat(totalSales.toString().match(re)[0]).toLocaleString() : "$0"}
                 percentage={{
                   color: "success",
                   amount: "",
@@ -262,7 +288,14 @@ function Dashboard() {
                 color="success"
                 icon="trending_down"
                 title="Cost"
-                count={cost ? '$' + parseFloat(cost.toString().match(re)[0]).toLocaleString() : "$0"}
+                count={loader ? <Dna
+                  visible={true}
+                  height="60"
+                  width="60"
+                  ariaLabel="dna-loading"
+                  wrapperStyle={{}}
+                  wrapperClass="dna-wrapper"
+                /> : cost ? '$' + parseFloat(cost.toString().match(re)[0]).toLocaleString() : "$0"}
                 percentage={{
                   color: "success",
                   amount: "",
@@ -277,7 +310,14 @@ function Dashboard() {
                 color="primary"
                 icon="attach_money"
                 title="Profit"
-                count={profit ? '$' + parseFloat(profit.toString().match(re)[0]).toLocaleString() : "$0"}
+                count={loader ? <Dna
+                  visible={true}
+                  height="60"
+                  width="60"
+                  ariaLabel="dna-loading"
+                  wrapperStyle={{}}
+                  wrapperClass="dna-wrapper"
+                /> : profit ? '$' + parseFloat(profit.toString().match(re)[0]).toLocaleString() : "$0"}
                 percentage={{
                   color: "success",
                   amount: "",
@@ -291,125 +331,133 @@ function Dashboard() {
           <Grid container spacing={3}>
           </Grid>
         </MDBox>
-        <MDBox pt={6} pb={3}>
-          <Grid container spacing={6}>
-          {Array.isArray(Rows) && Rows.length > 0 ? <Grid item xs={12} md={12}>
-              <Card>
-                <MDBox
-                  mx={2}
-                  mt={-3}
-                  py={3}
-                  px={2}
-                  variant="gradient"
-                  bgColor="info"
-                  borderRadius="lg"
-                  coloredShadow="info"
-                >
-                  <MDTypography variant="h6" color="white">
-                    Shipstation Order Data
-                  </MDTypography>
-                </MDBox>
-                <MDBox pt={3}>
-                  <DataTable
+        {loader ? <Dna
+                  visible={true}
+                  height="100"
+                  width="100"
+                  ariaLabel="dna-loading"
+                  wrapperStyle={{}}
+                  wrapperClass="dna-wrapper"
+                /> :
+          <MDBox pt={6} pb={3}>
+            <Grid container spacing={6}>
+              {Array.isArray(Rows) && Rows.length > 0 ? <Grid item xs={12} md={12}>
+                <Card>
+                  <MDBox
+                    mx={2}
+                    mt={-3}
+                    py={3}
+                    px={2}
+                    variant="gradient"
+                    bgColor="info"
+                    borderRadius="lg"
+                    coloredShadow="info"
+                  >
+                    <MDTypography variant="h6" color="white">
+                      Shipstation Order Data
+                    </MDTypography>
+                  </MDBox>
+                  <MDBox pt={3}>
+                    <DataTable
 
-                    table={{ columns: Columns, rows: Rows }}
-                    isSorted={false}
-                    entriesPerPage={false}
-                    showTotalEntries={false}
-                    noEndBorder
-                  />
-                </MDBox>
-              </Card>
-            </Grid> : null }
+                      table={{ columns: Columns, rows: Rows }}
+                      isSorted={false}
+                      entriesPerPage={false}
+                      showTotalEntries={false}
+                      noEndBorder
+                    />
+                  </MDBox>
+                </Card>
+              </Grid> : null}
 
-            {Array.isArray(shpmentRows) && shpmentRows.length > 0 ? <Grid item xs={12} md={12}>
-              <Card>
-                <MDBox
-                  mx={2}
-                  mt={-3}
-                  py={3}
-                  px={2}
-                  variant="gradient"
-                  bgColor="info"
-                  borderRadius="lg"
-                  coloredShadow="info"
-                >
-                  <MDTypography variant="h6" color="white">
-                    Shipstation Shipment Data
-                  </MDTypography>
-                </MDBox>
-                <MDBox pt={3}>
-                  <DataTable
+              {Array.isArray(shpmentRows) && shpmentRows.length > 0 ? <Grid item xs={12} md={12}>
+                <Card>
+                  <MDBox
+                    mx={2}
+                    mt={-3}
+                    py={3}
+                    px={2}
+                    variant="gradient"
+                    bgColor="info"
+                    borderRadius="lg"
+                    coloredShadow="info"
+                  >
+                    <MDTypography variant="h6" color="white">
+                      Shipstation Shipment Data
+                    </MDTypography>
+                  </MDBox>
+                  <MDBox pt={3}>
+                    <DataTable
 
-                    table={{ columns: shipmentColumns, rows: shpmentRows }}
-                    isSorted={false}
-                    entriesPerPage={false}
-                    showTotalEntries={false}
-                    noEndBorder
-                  />
-                </MDBox>
-              </Card>
-            </Grid> : null }
+                      table={{ columns: shipmentColumns, rows: shpmentRows }}
+                      isSorted={false}
+                      entriesPerPage={false}
+                      showTotalEntries={false}
+                      noEndBorder
+                    />
+                  </MDBox>
+                </Card>
+              </Grid> : null}
 
-            {Array.isArray(productRows) && productRows.length > 0 ? <Grid item xs={12} md={12}>
-              <Card>
-                <MDBox
-                  mx={2}
-                  mt={-3}
-                  py={3}
-                  px={2}
-                  variant="gradient"
-                  bgColor="info"
-                  borderRadius="lg"
-                  coloredShadow="info"
-                >
-                  <MDTypography variant="h6" color="white">
-                    Products Data
-                  </MDTypography>
-                </MDBox>
-                <MDBox pt={3}>
-                  <DataTable
+              {Array.isArray(productRows) && productRows.length > 0 ? <Grid item xs={12} md={12}>
+                <Card>
+                  <MDBox
+                    mx={2}
+                    mt={-3}
+                    py={3}
+                    px={2}
+                    variant="gradient"
+                    bgColor="info"
+                    borderRadius="lg"
+                    coloredShadow="info"
+                  >
+                    <MDTypography variant="h6" color="white">
+                      Products Data
+                    </MDTypography>
+                  </MDBox>
+                  <MDBox pt={3}>
+                    <DataTable
 
-                    table={{ columns: productColumns, rows: productRows }}
-                    isSorted={false}
-                    entriesPerPage={false}
-                    showTotalEntries={false}
-                    noEndBorder
-                  />
-                </MDBox>
-              </Card>
-            </Grid> : null}
+                      table={{ columns: productColumns, rows: productRows }}
+                      isSorted={false}
+                      entriesPerPage={false}
+                      showTotalEntries={false}
+                      noEndBorder
+                    />
+                  </MDBox>
+                </Card>
+              </Grid> : null}
 
 
-            <Grid item xs={12} md={12}>
-              <Card>
-                <MDBox
-                  mx={2}
-                  mt={-3}
-                  py={3}
-                  px={2}
-                  variant="gradient"
-                  bgColor="info"
-                  borderRadius="lg"
-                  coloredShadow="info"
-                >
-                  <MDTypography variant="h6" color="white">
-                    Shipment Cost
-                  </MDTypography>
-                </MDBox>
-                <MDBox pt={3}>
-                  <DataTable
-                    table={{ columns: shipmentCostColumn, rows: shipmentCostRow }}
-                    isSorted={false}
-                    entriesPerPage={false}
-                    showTotalEntries={false}
-                    noEndBorder
-                  />
-                </MDBox>
-              </Card>
+              <Grid item xs={12} md={12}>
+                <Card>
+                  <MDBox
+                    mx={2}
+                    mt={-3}
+                    py={3}
+                    px={2}
+                    variant="gradient"
+                    bgColor="info"
+                    borderRadius="lg"
+                    coloredShadow="info"
+                  >
+                    <MDTypography variant="h6" color="white">
+                      Shipment Cost
+                    </MDTypography>
+                  </MDBox>
+                  <MDBox pt={3}>
+                    <DataTable
+                      table={{ columns: shipmentCostColumn, rows: shipmentCostRow }}
+                      isSorted={false}
+                      entriesPerPage={false}
+                      showTotalEntries={false}
+                      noEndBorder
+                    />
+                  </MDBox>
+                </Card>
+              </Grid>
             </Grid>
-          </Grid>
-        </MDBox>
+          </MDBox>}
       </MDBox>
       {/* <Footer /> */}
     </DashboardLayout>

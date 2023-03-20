@@ -27,9 +27,6 @@ function MDAlert({ color, dismissible, children, ...rest }) {
         <MDBox display="flex" alignItems="center" color="white">
           {children}
         </MDBox>
-        {dismissible ? (
-          <MDAlertCloseIcon onClick={mount ? handleAlertStatus : null}>&times;</MDAlertCloseIcon>
-        ) : null}
       </MDAlertRoot>
     </Fade>
   );

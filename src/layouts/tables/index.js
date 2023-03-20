@@ -25,6 +25,7 @@ import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import Modal from '@mui/material/Modal';
+import { Dna, InfinitySpin } from 'react-loader-spinner'
 function Tables() {
   const style = {
     position: 'absolute',
@@ -48,7 +49,8 @@ function Tables() {
   const [order, setOrderData] = useState([])
   const [shipment, setShipmentData] = useState([])
   const [products, setProductsData] = useState([])
-
+  const [loader, setLoader] = useState(false)
+  const [reportLoader, setReportLoader] = useState(false)
   console.log("value", value)
   console.log("value2", value2)
   var re = new RegExp('^-?\\d+(?:\.\\d{0,' + (2 || -1) + '})?');
@@ -94,6 +96,8 @@ function Tables() {
   const productRows = products
 
   const geReport = () => {
+    setLoader(true)
+    closeLoaderIn5Seconds()
     axios.post('https://insight.roheex.com/getReport', { startDate: value + 'T' + '00:00', endDate: value2 + 'T' + '23:59' }, {
       headers: {
         'Authorization': `Bearer ${localStorage.getItem('token')}`
@@ -186,6 +190,12 @@ function Tables() {
     })
   }
 
+  const closeLoaderIn5Seconds = () => {
+    setTimeout(() => {
+      setLoader(false);
+    }, 1500);
+  };
+
 
   if (Array.isArray(report) && report.length > 0) {
     var sanmarcost = report[0].reduce(function (acc, obj) { return acc + parseInt(obj['Sanmar Ship Cost']); }, 0);
@@ -203,6 +213,7 @@ function Tables() {
   }
 
   const sendReport = async () => {
+    setReportLoader(true)
     console.log("tags", tags)
     console.log("working")
     const table = `<div class="image-container" style="height:100%; max-width: 1200px;
@@ -216,7 +227,7 @@ function Tables() {
     text-align:center;
     font-family: 'Poppins', sans-serif;
     font-weight:bold;
-    font-size:24px;">Amazon&nbsp;sales&nbsp;report&nbsp;from&nbsp;<span class="fr">${value}</span> to <span class="to">${value2}</span>
+    font-size:24px;"><span class="fr"> Amazon </span> <span class="fr"> sales </span> <span class="fr"> report </span> <span class="fr"> from </span> <span class="fr">${value}</span> to <span class="to">${value2}</span>
     </h1>
     <table id="customers" style="height:100%; border-collapse: collapse;
       width: 100%;">
@@ -324,8 +335,16 @@ function Tables() {
     });
 
     if (response.status === 200) {
+      alert("message sent")
       console.log("here")
+      setReportLoader(false)
+      setOpen(false)
       iframe.style.display = 'none';
+    }
+    else {
+      setOpen(false)
+      setReportLoader(false)
+      alert("error sending message")
     }
   }
 
@@ -356,7 +375,7 @@ function Tables() {
   return (
     <DashboardLayout>
       <DashboardNavbar />
-     
+
       <MDBox pt={6} pb={3}>
         <Grid container spacing={6}>
 
@@ -365,7 +384,7 @@ function Tables() {
 
             <Card className='custom-card-style'>
               <div className='flex'>
-             
+
                 <MDTypography variant="h5" color="white">
                   From:
                 </MDTypography>
@@ -396,8 +415,46 @@ function Tables() {
           </Grid>
         </Grid>
 
-        {Array.isArray(Row) && Row.length > 0 ?
-          <Grid item xs={12} md={12}>
+        {loader ? <Dna
+          visible={true}
+          height="100"
+          width="100"
+          ariaLabel="dna-loading"
+          wrapperStyle={{}}
+          wrapperClass="dna-wrapper"
+        /> : <>
+          {Array.isArray(Row) && Row.length > 0 ?
+            <Grid item xs={12} md={12}>
+              <Card>
+                <MDBox
+                  mx={2}
+                  mt={-3}
+                  py={3}
+                  px={2}
+                  variant="gradient"
+                  bgColor="info"
+                  borderRadius="lg"
+                  coloredShadow="info"
+                >
+                  <MDTypography variant="h6" color="white">
+                    Report
+                  </MDTypography>
+                </MDBox>
+                <MDBox pt={3}>
+                  <DataTable
+                    table={{ columns: Columns, rows: Row }}
+                    isSorted={false}
+                    entriesPerPage={false}
+                    showTotalEntries={false}
+                    noEndBorder
+                  />
+                </MDBox>
+              </Card>
+            </Grid> : null}
+
+
+
+          {Array.isArray(Rows) && Rows.length > 0 ? <Grid item xs={12} md={12} mt={7}>
             <Card>
               <MDBox
                 mx={2}
@@ -410,12 +467,13 @@ function Tables() {
                 coloredShadow="info"
               >
                 <MDTypography variant="h6" color="white">
-                  Report
+                  Shipstation Order Data
                 </MDTypography>
               </MDBox>
               <MDBox pt={3}>
                 <DataTable
-                  table={{ columns: Columns, rows: Row }}
+
+                  table={{ columns: Columns2, rows: Rows }}
                   isSorted={false}
                   entriesPerPage={false}
                   showTotalEntries={false}
@@ -425,100 +483,7 @@ function Tables() {
             </Card>
           </Grid> : null}
 
-
-
-        {Array.isArray(Rows) && Rows.length > 0 ? <Grid item xs={12} md={12} mt={7}>
-          <Card>
-            <MDBox
-              mx={2}
-              mt={-3}
-              py={3}
-              px={2}
-              variant="gradient"
-              bgColor="info"
-              borderRadius="lg"
-              coloredShadow="info"
-            >
-              <MDTypography variant="h6" color="white">
-                Shipstation Order Data
-              </MDTypography>
-            </MDBox>
-            <MDBox pt={3}>
-              <DataTable
-
-                table={{ columns: Columns2, rows: Rows }}
-                isSorted={false}
-                entriesPerPage={false}
-                showTotalEntries={false}
-                noEndBorder
-              />
-            </MDBox>
-          </Card>
-        </Grid> : null}
-
-        {Array.isArray(shpmentRows) && shpmentRows.length > 0 ? <Grid item xs={12} md={12} mt={7}>
-          <Card>
-            <MDBox
-              mx={2}
-              mt={-3}
-              py={3}
-              px={2}
-              variant="gradient"
-              bgColor="info"
-              borderRadius="lg"
-              coloredShadow="info"
-            >
-              <MDTypography variant="h6" color="white">
-                Shipstation Shipment Data
-              </MDTypography>
-            </MDBox>
-            <MDBox pt={3}>
-              <DataTable
-
-                table={{ columns: shipmentColumns, rows: shpmentRows }}
-                isSorted={false}
-                entriesPerPage={false}
-                showTotalEntries={false}
-                noEndBorder
-              />
-            </MDBox>
-          </Card>
-        </Grid> : null}
-
-        {Array.isArray(productRows) && productRows.length > 0 ? <Grid item xs={12} md={12} mt={7}>
-          <Card>
-            <MDBox
-              mx={2}
-              mt={-3}
-              py={3}
-              px={2}
-              variant="gradient"
-              bgColor="info"
-              borderRadius="lg"
-              coloredShadow="info"
-            >
-              <MDTypography variant="h6" color="white">
-                Products Data
-              </MDTypography>
-            </MDBox>
-            <MDBox pt={3}>
-              <DataTable
-
-                table={{ columns: productColumns, rows: productRows }}
-                isSorted={false}
-                entriesPerPage={false}
-                showTotalEntries={false}
-                noEndBorder
-              />
-            </MDBox>
-          </Card>
-        </Grid> : null}
-
-        
-        
-
-        {sanmarcost  || alphacost  ? 
-          <Grid item xs={12} md={12} mt={5}>
+          {Array.isArray(shpmentRows) && shpmentRows.length > 0 ? <Grid item xs={12} md={12} mt={7}>
             <Card>
               <MDBox
                 mx={2}
@@ -531,12 +496,13 @@ function Tables() {
                 coloredShadow="info"
               >
                 <MDTypography variant="h6" color="white">
-                  Shipment Cost
+                  Shipstation Shipment Data
                 </MDTypography>
               </MDBox>
               <MDBox pt={3}>
                 <DataTable
-                  table={{ columns: shipmentCostColumn, rows: shipmentCostRow }}
+
+                  table={{ columns: shipmentColumns, rows: shpmentRows }}
                   isSorted={false}
                   entriesPerPage={false}
                   showTotalEntries={false}
@@ -545,6 +511,67 @@ function Tables() {
               </MDBox>
             </Card>
           </Grid> : null}
+
+          {Array.isArray(productRows) && productRows.length > 0 ? <Grid item xs={12} md={12} mt={7}>
+            <Card>
+              <MDBox
+                mx={2}
+                mt={-3}
+                py={3}
+                px={2}
+                variant="gradient"
+                bgColor="info"
+                borderRadius="lg"
+                coloredShadow="info"
+              >
+                <MDTypography variant="h6" color="white">
+                  Products Data
+                </MDTypography>
+              </MDBox>
+              <MDBox pt={3}>
+                <DataTable
+
+                  table={{ columns: productColumns, rows: productRows }}
+                  isSorted={false}
+                  entriesPerPage={false}
+                  showTotalEntries={false}
+                  noEndBorder
+                />
+              </MDBox>
+            </Card>
+          </Grid> : null}
+
+
+
+
+          {sanmarcost || alphacost ?
+            <Grid item xs={12} md={12} mt={5}>
+              <Card>
+                <MDBox
+                  mx={2}
+                  mt={-3}
+                  py={3}
+                  px={2}
+                  variant="gradient"
+                  bgColor="info"
+                  borderRadius="lg"
+                  coloredShadow="info"
+                >
+                  <MDTypography variant="h6" color="white">
+                    Shipment Cost
+                  </MDTypography>
+                </MDBox>
+                <MDBox pt={3}>
+                  <DataTable
+                    table={{ columns: shipmentCostColumn, rows: shipmentCostRow }}
+                    isSorted={false}
+                    entriesPerPage={false}
+                    showTotalEntries={false}
+                    noEndBorder
+                  />
+                </MDBox>
+              </Card>
+            </Grid> : null}</>}
       </MDBox>
       {/* <Footer /> */}
 
@@ -555,21 +582,32 @@ function Tables() {
           aria-labelledby="modal-modal-title"
           aria-describedby="modal-modal-description"
         >
-          <Box sx={style}>
+          <Box sx={style}   className="modal-cont">
             <MDTypography variant="h5" color="black">
               Add numbers to send report
             </MDTypography>
-            <Typography id="modal-modal-description" sx={{ mt: 2 }}>
+
+            <MDTypography variant="p" className="custom-p" color="black">
+              Note : Press enter after every number
+            </MDTypography>
+            <Typography id="modal-modal-description" sx={{ mt: 2 }} className="modal-cont">
               <TagsInput value={tags} onChange={handleTags} inputProps={{ placeholder: 'Add number' }} validate={validate} />
               <button className='custom-btn custom-btn-send' onClick={() => sendReport()}><MDTypography variant="h6" color="white">
-                Send
+                {reportLoader ? <Dna
+                  visible={true}
+                  height="26"
+                  width="36"
+                  ariaLabel="dna-loading"
+                  wrapperStyle={{}}
+                  wrapperClass="dna-wrapper"
+                /> : "Send"}
               </MDTypography></button>
             </Typography>
           </Box>
         </Modal>
       </div>
 
-      
+
     </DashboardLayout>
   );
 }
