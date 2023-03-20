@@ -140,3 +140,7 @@
     align-items: center;
     flex-direction: column;
   }
+
+  .react-tagsinput{
+    width: 100% !important;
+  }

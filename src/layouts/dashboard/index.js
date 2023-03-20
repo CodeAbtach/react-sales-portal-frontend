@@ -331,14 +331,14 @@ function Dashboard() {
           <Grid container spacing={3}>
           </Grid>
         </MDBox>
-        {loader ? <Dna
+        {loader ? <div className="modal-cont"><Dna
                   visible={true}
                   height="100"
                   width="100"
                   ariaLabel="dna-loading"
                   wrapperStyle={{}}
                   wrapperClass="dna-wrapper"
-                /> :
+                /></div> :
           <MDBox pt={6} pb={3}>
             <Grid container spacing={6}>
               {Array.isArray(Rows) && Rows.length > 0 ? <Grid item xs={12} md={12}>

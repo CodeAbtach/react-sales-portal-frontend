@@ -415,14 +415,14 @@ function Tables() {
           </Grid>
         </Grid>
 
-        {loader ? <Dna
+        {loader ? <div className="modal-cont"><Dna
           visible={true}
           height="100"
           width="100"
           ariaLabel="dna-loading"
           wrapperStyle={{}}
           wrapperClass="dna-wrapper"
-        /> : <>
+        /> </div>: <>
           {Array.isArray(Row) && Row.length > 0 ?
             <Grid item xs={12} md={12}>
               <Card>
