@@ -21,15 +21,17 @@ import themeDarkRTL from "assets/theme-dark/theme-rtl";
 import rtlPlugin from "stylis-plugin-rtl";
 import { CacheProvider } from "@emotion/react";
 import createCache from "@emotion/cache";
-import routes from "routes";
+import {routes} from "routes";
+import {dashboardRoutes} from "routes";
 import { useMaterialUIController, setMiniSidenav, setOpenConfigurator } from "context";
 
 // Images
 import brandWhite from "assets/images/logo-ct.png";
 import brandDark from "assets/images/logo-ct-dark.png";
 import ProtectedRoute from "protectedRoute";
-
+import moment from 'moment-timezone';
 export default function App() {
+  moment.tz.setDefault('America/Chicago');
   const [controller, dispatch] = useMaterialUIController();
   const {
     miniSidenav,
@@ -132,7 +134,7 @@ export default function App() {
               color={sidenavColor}
               brand={(transparentSidenav && !darkMode) || whiteSidenav ? brandDark : brandWhite}
               brandName="Amazon Sales Dashboard"
-              routes={routes}
+              routes={dashboardRoutes}
               onMouseEnter={handleOnMouseEnter}
               onMouseLeave={handleOnMouseLeave}
             />
@@ -156,7 +158,7 @@ export default function App() {
             color={sidenavColor}
             brand={(transparentSidenav && !darkMode) || whiteSidenav ? brandDark : brandWhite}
             brandName="Amazon Sales Dashboard"
-            routes={routes}
+            routes={dashboardRoutes}
             onMouseEnter={handleOnMouseEnter}
             onMouseLeave={handleOnMouseLeave}
           />

@@ -32,27 +32,43 @@ import Select, { SelectChangeEvent } from '@mui/material/Select';
 import DataTable from "examples/Tables/DataTable";
 
 function Dashboard() {
-  
- const Columns = [
-  { Header: "author", accessor: "author", width: "45%", align: "left" },
-  { Header: "function", accessor: "function", align: "left" },
-  { Header: "status", accessor: "status", align: "center" },
-  { Header: "employed", accessor: "employed", align: "center" },
-  { Header: "action", accessor: "action", align: "center" },
-]
 
-const Rows = [
-  {
-    author: "ASjad" ,
-    function: "RIzvi",
-    status: "False",
-    employed: "yes",
-    action: "hell"
-  },
-  
-]
   const [report, setReportData] = useState()
   const [time, setDate] = useState(1);
+  const [order, setOrderData] = useState([])
+  const [shipment, setShipmentData] = useState([])
+  const [products, setProductsData] = useState([])
+
+
+  const Columns = [
+    { Header: "Order No", accessor: "Order No", width: "35%", align: "left" },
+    { Header: "Price", accessor: "Price", align: "left" },
+    { Header: "Date", accessor: "Date", align: "left" },
+    { Header: "Tax Amount", accessor: "Tax Amount", align: "left" },
+    { Header: "Amazon Fees", accessor: "Amazon Fees", align: "left" },
+  ]
+
+  const Rows = order
+
+  const shipmentColumns = [
+    { Header: "Order No", accessor: "Order No", width: "35%", align: "left" },
+    { Header: "Cost", accessor: "Cost", align: "left" },
+    { Header: "Date", accessor: "Date", align: "left" },
+  ]
+
+  const shpmentRows = shipment
+
+  const productColumns = [
+    { Header: "Items", accessor: "Items", width: "35%", align: "left" },
+    { Header: "Price", accessor: "Price", align: "left" },
+    { Header: "Quantity", accessor: "Quantity", align: "left" },
+    { Header: "Total", accessor: "Total", align: "left" },
+    { Header: "Vendor", accessor: "Vendor", align: "left" },
+  ]
+
+  const productRows = products
+
+
 
   const handleChange = (event) => {
     setDate(event.target.value);
@@ -60,37 +76,139 @@ const Rows = [
   var re = new RegExp('^-?\\d+(?:\.\\d{0,' + (2 || -1) + '})?');
   useEffect(() => {
     const date = new Date();
-    const day = ("0" + (date.getDate() - 1)).slice(-2);
+    const day = ("0" + (date.getDate() - 2)).slice(-2);
     const week = ("0" + (date.getDate() - 8)).slice(-2);
     const starting = '01'
     const month = ("0" + (date.getMonth() + 1)).slice(-2);
     const year = date.getFullYear();
 
-    const startDate =time===1 ? year + '-' + month + '-' + day + 'T' + '00:00' : time === 2 ? year + '-' + month + '-' + week + 'T' + '00:00' :year + '-' +  month + '-' + starting + 'T' + '00:00'
-    const endDate = time===1 ? year + '-' +  month + '-' + day + 'T' + '23:59' : time === 2 ? year + '-' +  month + '-' + day + 'T' + '23:59' : year + '-' +  month + '-' + day + 'T' + '23:59'
+    const startDate = time === 1 ? year + '-' + month + '-' + day + 'T' + '00:00' : time === 2 ? year + '-' + month + '-' + week + 'T' + '00:00' : year + '-' + month + '-' + starting + 'T' + '00:00'
+    const endDate = time === 1 ? year + '-' + month + '-' + day + 'T' + '23:59' : time === 2 ? year + '-' + month + '-' + day + 'T' + '23:59' : year + '-' + month + '-' + day + 'T' + '23:59'
 
-    axios.post('https://insight.roheex.com/getReport', { startDate: startDate, endDate: endDate}, {
+    axios.post('https://insight.roheex.com/getReport', { startDate: startDate, endDate: endDate }, {
       headers: {
         'Authorization': `Bearer ${localStorage.getItem('token')}`
       }
     }).then((res) => setReportData(res.data)).catch((error) => console.log("error", error))
+
+    const username = process.env.REACT_APP_USERNAME;
+    const password = process.env.REACT_APP_PASSWORD;
+
+    const headers = {
+      Authorization: `Basic ${btoa(`${username}:${password}`)}`
+    };
+
+    axios.get(`https://ssapi.shipstation.com/orders?storeId=683661&orderDateStart=${startDate}&orderDateEnd=${endDate}`, { headers })
+      .then(async response => {
+        let orderData = await response.data.orders.map((x) => {
+          const dateTime = new Date(x.orderDate);
+          const options = {
+            year: 'numeric',
+            month: 'numeric',
+            day: 'numeric',
+            hour: 'numeric',
+            minute: 'numeric',
+            second: 'numeric'
+          };
+
+          const formatter = new Intl.DateTimeFormat('en-US', options);
+          const readableDateTime = formatter.format(dateTime);
+          return {
+            "Order No": x.orderNumber,
+            Price: `${'$' + x.amountPaid}`,
+            Date: readableDateTime,
+            "Tax Amount": `${'$' + x.taxAmount}`,
+            "Amazon Fees": `${'$' + (x.amountPaid - (x.amountPaid * 0.83)).toString().match(re)[0]}`
+          }
+        })
+
+        setOrderData(orderData)
+      })
+      .catch(error => {
+        console.error(error);
+      });
+
+
+    axios.get(`https://ssapi.shipstation.com/shipments?storeId=683661&createDateStart=${startDate}&createDateEnd=${endDate}`, { headers })
+      .then(async response => {
+        console.log("shipments", response.data.shipments)
+        let shipmentData = await response.data.shipments.map((x) => {
+          const dateTime = new Date(x.createDate);
+          const options = {
+            year: 'numeric',
+            month: 'numeric',
+            day: 'numeric',
+            hour: 'numeric',
+            minute: 'numeric',
+            second: 'numeric'
+          };
+
+          const formatter = new Intl.DateTimeFormat('en-US', options);
+          const readableDateTime = formatter.format(dateTime);
+          return {
+            "Order No": x.orderNumber,
+            "Cost": x.shipmentCost,
+            "Date": readableDateTime
+          }
+        })
+
+        setShipmentData(shipmentData)
+      })
+      .catch(error => {
+        console.error(error);
+      });
+
+
+    axios.post('https://insight.roheex.com/getProducts', { startDate: startDate, endDate: endDate }, {
+      headers: {
+        'Authorization': `Bearer ${localStorage.getItem('token')}`
+      }
+    }).then(async res => {
+      let productData = await res.data[0].map((x) => {
+        return {
+          "Items": x.Items,
+          "Price": x.Price,
+          "Quantity": x.Quantity,
+          "Total": (x.Quantity * x.Price).toString().match(re)[0],
+          "Vendor": x.Vendor
+        }
+      })
+
+      setProductsData(productData)
+    })
   }, [time])
+
   const { sales, tasks } = reportsLineChartData;
 
-  if(Array.isArray(report) && report.length > 0){
-  var sanmarcost = report[0].reduce(function (acc, obj) { return acc + parseInt(obj['Sanmar Ship Cost']); }, 0);
-  var alphacost = report[0].reduce(function (acc, obj) { return acc + parseInt(obj['Alpha Ship Cost']); }, 0);
-  var result = report[0].reduce(function (acc, obj) { return acc + parseInt(obj['Total Orders']); }, 0);
-  var totalSales =  report[0].reduce(function (acc, obj) { return acc + parseFloat(obj['Sales']); }, 0);
-  var cost = report[0].reduce(function (acc, obj) { return acc + parseFloat(obj['Cost']); }, 0);
-  var profit = report[0].reduce(function (acc, obj) { return acc + parseFloat(obj['Profit']); }, 0);
+  if (Array.isArray(report) && report.length > 0) {
+    var sanmarcost = report[0].reduce(function (acc, obj) { return acc + parseInt(obj['Sanmar Ship Cost']); }, 0);
+    var alphacost = report[0].reduce(function (acc, obj) { return acc + parseInt(obj['Alpha Ship Cost']); }, 0);
+    var result = report[0].reduce(function (acc, obj) { return acc + parseInt(obj['Total Orders']); }, 0);
+    var totalSales = report[0].reduce(function (acc, obj) { return acc + parseFloat(obj['Sales']); }, 0);
+    var cost = report[0].reduce(function (acc, obj) { return acc + parseFloat(obj['Cost']); }, 0);
+    var profit = report[0].reduce(function (acc, obj) { return acc + parseFloat(obj['Profit']); }, 0);
   }
-  
+
+  const shipmentCostColumn = [
+    { Header: "Vendor", accessor: "Vendor", width: "35%", align: "left" },
+    { Header: "Cost", accessor: "Cost", align: "left" },
+  ]
+
+  const shipmentCostRow = [
+    {
+      "Vendor": "Sanmar",
+      "Cost": '$' + (sanmarcost !== undefined ? sanmarcost : "0"),
+    },
+    {
+      "Vendor": "Alpha",
+      "Cost": '$' + (alphacost !== undefined ? alphacost : "0"),
+    },
+  ]
 
   return (
     <DashboardLayout>
       <DashboardNavbar />
-      <FormControl fullWidth style={{marginLeft:'10px', marginTop: '20px', marginBottom:'20px'}}>
+      <FormControl fullWidth style={{ marginLeft: '10px', marginTop: '20px', marginBottom: '20px' }}>
         <InputLabel id="demo-simple-select-label">Select Time</InputLabel>
         <Select
           labelId="demo-simple-select-label"
@@ -98,8 +216,8 @@ const Rows = [
           value={time}
           label="Select Time"
           onChange={handleChange}
-          style={{width:'150px', height:'45px'}}
-          
+          style={{ width: '150px', height: '45px' }}
+
         >
           <MenuItem value={1}>Today</MenuItem>
           <MenuItem value={2}>Week</MenuItem>
@@ -171,104 +289,129 @@ const Rows = [
         </Grid>
         <MDBox mt={4.5}>
           <Grid container spacing={3}>
-            {/* <Grid item xs={12} md={6} lg={4}>
-              <MDBox mb={3}>
-                <ReportsBarChart
-                  color="info"
-                  title="Week Sales"
-                  date="campaign sent 2 days ago"
-                  chart={reportsBarChartData}
-                />
-              </MDBox>
-            </Grid> */}
-            {/* <Grid item xs={12} md={6} lg={4}>
-              <MDBox mb={3}>
-                <ReportsLineChart
-                  color="success"
-                  title="daily sales"
-                  description={
-                    <>
-                      (<strong>+15%</strong>) increase in today sales.
-                    </>
-                  }
-                  date="updated 4 min ago"
-                  chart={sales}
-                />
-              </MDBox>
-            </Grid> */}
-            {/* <Grid item xs={12} md={6} lg={4}>
-              <MDBox mb={3}>
-                <ReportsLineChart
-                  color="dark"
-                  title="completed tasks"
-                  description="Last Campaign Performance"
-                  date="just updated"
-                  chart={tasks}
-                />
-              </MDBox>
-            </Grid> */}
           </Grid>
         </MDBox>
         <MDBox pt={6} pb={3}>
-        <Grid container spacing={6}>
-          <Grid item xs={12}>
-            <Card>
-              <MDBox
-                mx={2}
-                mt={-3}
-                py={3}
-                px={2}
-                variant="gradient"
-                bgColor="info"
-                borderRadius="lg"
-                coloredShadow="info"
-              >
-                <MDTypography variant="h6" color="white">
-                  Authors Table
-                </MDTypography>
-              </MDBox>
-              <MDBox pt={3}>
-                <DataTable
-                  table={{ columns: Columns, rows: Rows }}
-                  isSorted={false}
-                  entriesPerPage={false}
-                  showTotalEntries={false}
-                  noEndBorder
-                />
-              </MDBox>
-            </Card>
+          <Grid container spacing={6}>
+          {Array.isArray(Rows) && Rows.length > 0 ? <Grid item xs={12} md={12}>
+              <Card>
+                <MDBox
+                  mx={2}
+                  mt={-3}
+                  py={3}
+                  px={2}
+                  variant="gradient"
+                  bgColor="info"
+                  borderRadius="lg"
+                  coloredShadow="info"
+                >
+                  <MDTypography variant="h6" color="white">
+                    Shipstation Order Data
+                  </MDTypography>
+                </MDBox>
+                <MDBox pt={3}>
+                  <DataTable
+
+                    table={{ columns: Columns, rows: Rows }}
+                    isSorted={false}
+                    entriesPerPage={false}
+                    showTotalEntries={false}
+                    noEndBorder
+                  />
+                </MDBox>
+              </Card>
+            </Grid> : null }
+
+            {Array.isArray(shpmentRows) && shpmentRows.length > 0 ? <Grid item xs={12} md={12}>
+              <Card>
+                <MDBox
+                  mx={2}
+                  mt={-3}
+                  py={3}
+                  px={2}
+                  variant="gradient"
+                  bgColor="info"
+                  borderRadius="lg"
+                  coloredShadow="info"
+                >
+                  <MDTypography variant="h6" color="white">
+                    Shipstation Shipment Data
+                  </MDTypography>
+                </MDBox>
+                <MDBox pt={3}>
+                  <DataTable
+
+                    table={{ columns: shipmentColumns, rows: shpmentRows }}
+                    isSorted={false}
+                    entriesPerPage={false}
+                    showTotalEntries={false}
+                    noEndBorder
+                  />
+                </MDBox>
+              </Card>
+            </Grid> : null }
+
+            {Array.isArray(productRows) && productRows.length > 0 ? <Grid item xs={12} md={12}>
+              <Card>
+                <MDBox
+                  mx={2}
+                  mt={-3}
+                  py={3}
+                  px={2}
+                  variant="gradient"
+                  bgColor="info"
+                  borderRadius="lg"
+                  coloredShadow="info"
+                >
+                  <MDTypography variant="h6" color="white">
+                    Products Data
+                  </MDTypography>
+                </MDBox>
+                <MDBox pt={3}>
+                  <DataTable
+
+                    table={{ columns: productColumns, rows: productRows }}
+                    isSorted={false}
+                    entriesPerPage={false}
+                    showTotalEntries={false}
+                    noEndBorder
+                  />
+                </MDBox>
+              </Card>
+            </Grid> : null}
+
+
+            <Grid item xs={12} md={12}>
+              <Card>
+                <MDBox
+                  mx={2}
+                  mt={-3}
+                  py={3}
+                  px={2}
+                  variant="gradient"
+                  bgColor="info"
+                  borderRadius="lg"
+                  coloredShadow="info"
+                >
+                  <MDTypography variant="h6" color="white">
+                    Shipment Cost
+                  </MDTypography>
+                </MDBox>
+                <MDBox pt={3}>
+                  <DataTable
+                    table={{ columns: shipmentCostColumn, rows: shipmentCostRow }}
+                    isSorted={false}
+                    entriesPerPage={false}
+                    showTotalEntries={false}
+                    noEndBorder
+                  />
+                </MDBox>
+              </Card>
+            </Grid>
           </Grid>
-          <Grid item xs={12}>
-            <Card>
-              <MDBox
-                mx={2}
-                mt={-3}
-                py={3}
-                px={2}
-                variant="gradient"
-                bgColor="info"
-                borderRadius="lg"
-                coloredShadow="info"
-              >
-                <MDTypography variant="h6" color="white">
-                  Projects Table
-                </MDTypography>
-              </MDBox>
-              <MDBox pt={3}>
-                <DataTable
-                  table={{ columns: Columns, rows: Rows }}
-                  isSorted={false}
-                  entriesPerPage={false}
-                  showTotalEntries={false}
-                  noEndBorder
-                />
-              </MDBox>
-            </Card>
-          </Grid>
-        </Grid>
+        </MDBox>
       </MDBox>
-      </MDBox>
-      <Footer />
+      {/* <Footer /> */}
     </DashboardLayout>
   );
 }

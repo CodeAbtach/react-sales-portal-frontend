@@ -11,7 +11,7 @@ import SignUp from "layouts/authentication/sign-up";
 import Icon from "@mui/material/Icon";
 import ProtectedRoute from "protectedRoute";
 
-const routes = [
+export const dashboardRoutes = [
   {
     type: "collapse",
     name: "Dashboard",
@@ -22,10 +22,38 @@ const routes = [
   },
   {
     type: "collapse",
-    name: "Tables",
-    key: "tables",
+    name: "Get Report",
+    key: "get-report",
     icon: <Icon fontSize="small">table_view</Icon>,
-    route: "/tables",
+    route: "/get-report",
+    component: <ProtectedRoute><Tables /></ProtectedRoute>,
+  },
+
+  // {
+  //   type: "collapse",
+  //   name: "Notifications",
+  //   key: "notifications",
+  //   icon: <Icon fontSize="small">notifications</Icon>,
+  //   route: "/notifications",
+  //   component: <Notifications />,
+  // },
+];
+
+export const routes = [
+  {
+    type: "collapse",
+    name: "Dashboard",
+    key: "dashboard",
+    icon: <Icon fontSize="small">dashboard</Icon>,
+    route: "/dashboard",
+    component: <ProtectedRoute><Dashboard /></ProtectedRoute>,
+  },
+  {
+    type: "collapse",
+    name: "Get Report",
+    key: "get-report",
+    icon: <Icon fontSize="small">table_view</Icon>,
+    route: "/get-report",
     component: <ProtectedRoute><Tables /></ProtectedRoute>,
   },
 
@@ -48,4 +76,4 @@ const routes = [
   },
 ];
 
-export default routes;
+

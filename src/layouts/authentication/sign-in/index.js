@@ -24,6 +24,7 @@ import MDButton from "components/MDButton";
 
 // Authentication layout components
 import BasicLayout from "layouts/authentication/components/BasicLayout";
+import { Routes, Route, Navigate, useLocation, redirect } from "react-router-dom";
 
 // Images
 import bgImage from "assets/images/bg-01.jpg";
@@ -33,15 +34,27 @@ function Basic() {
   const [rememberMe, setRememberMe] = useState(false);
   const [email, setEmail] = useState()
   const [paswword, setPassword] = useState()
+  const [token, setToken] = useState(null)
 
   console.log("email", email)
   console.log("passwrod", paswword)
 
   const onSubmit = () => {
-    axios.post('https://insight.roheex.com/login', {username: email, password: paswword}).then((response)=> window.localStorage.setItem('token', response.data.token)).catch((error) => console.log("error", error))
+    axios.post('https://insight.roheex.com/login', { username: email, password: paswword }).then((response) => {
+      if (response.data.token) { 
+        window.localStorage.setItem('token', response.data.token)
+        setToken(response.data.token)
+        
+      }
+    }).catch((error) => console.log("error", error))
   }
 
   const handleSetRememberMe = () => setRememberMe(!rememberMe);
+
+  if(token){
+    return <Navigate replace to="/dashboard" />;
+  }
+  else{
 
   return (
     <BasicLayout image={bgImage}>
@@ -60,7 +73,7 @@ function Basic() {
           <MDTypography variant="h4" fontWeight="medium" color="white" mt={1}>
             Sign in
           </MDTypography>
-          <Grid container spacing={3} justifyContent="center" sx={{ mt: 1, mb: 2 }}>
+          {/* <Grid container spacing={3} justifyContent="center" sx={{ mt: 1, mb: 2 }}>
             <Grid item xs={2}>
               <MDTypography component={MuiLink} href="#" variant="body1" color="white">
                 <FacebookIcon color="inherit" />
@@ -76,18 +89,18 @@ function Basic() {
                 <GoogleIcon color="inherit" />
               </MDTypography>
             </Grid>
-          </Grid>
+          </Grid> */}
         </MDBox>
         <MDBox pt={4} pb={3} px={3}>
           <MDBox component="form" role="form">
             <MDBox mb={2}>
-              <MDInput type="email" label="Email" fullWidth onChange={(e) => setEmail(e.target.value)}/>
+              <MDInput type="email" label="Email" fullWidth onChange={(e) => setEmail(e.target.value)} />
             </MDBox>
             <MDBox mb={2}>
-              <MDInput type="password" label="Password" fullWidth onChange={(e) => setPassword(e.target.value)}/>
+              <MDInput type="password" label="Password" fullWidth onChange={(e) => setPassword(e.target.value)} />
             </MDBox>
             <MDBox mt={4} mb={1}>
-              <MDButton variant="gradient" color="info" fullWidth onClick = {() => onSubmit()}>
+              <MDButton variant="gradient" color="info" fullWidth onClick={() => onSubmit()}>
                 sign in
               </MDButton>
             </MDBox>
@@ -96,6 +109,7 @@ function Basic() {
       </Card>
     </BasicLayout>
   );
+}
 }
 
 export default Basic;
