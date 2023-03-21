@@ -131,6 +131,7 @@ export default function App() {
         {layout === "dashboard" && (
           <>
             <Sidenav
+              
               color={sidenavColor}
               brand={(transparentSidenav && !darkMode) || whiteSidenav ? brandDark : brandWhite}
               brandName="Amazon Sales Dashboard"

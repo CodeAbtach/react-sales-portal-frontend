@@ -10,37 +10,47 @@ import MDBox from "components/MDBox";
 // Amazon Sales ReportReact example components
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
 import DashboardNavbar from "examples/Navbars/DashboardNavbar";
-import Footer from "examples/Footer";
-import ReportsBarChart from "examples/Charts/BarCharts/ReportsBarChart";
-import ReportsLineChart from "examples/Charts/LineCharts/ReportsLineChart";
 import ComplexStatisticsCard from "examples/Cards/StatisticsCards/ComplexStatisticsCard";
-
+import Modal from '@mui/material/Modal';
 // Data
-import reportsBarChartData from "layouts/dashboard/data/reportsBarChartData";
 import reportsLineChartData from "layouts/dashboard/data/reportsLineChartData";
 
 // Dashboard components
-import Projects from "layouts/dashboard/components/Projects";
-import OrdersOverview from "layouts/dashboard/components/OrdersOverview";
+
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import Box from '@mui/material/Box';
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
-import Select, { SelectChangeEvent } from '@mui/material/Select';
+import Select from '@mui/material/Select';
 import DataTable from "examples/Tables/DataTable";
-import { Dna, InfinitySpin } from 'react-loader-spinner'
+import { Dna } from 'react-loader-spinner'
+import Typography from '@mui/material/Typography';
+import TagsInput from 'react-tagsinput';
+import 'react-tagsinput/react-tagsinput.css';
+import html2canvas from 'html2canvas';
+import MDSnackbar from "components/MDSnackbar";
 
 function Dashboard() {
-
+  const style = {
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    transform: 'translate(-50%, -50%)',
+    width: 400,
+    bgcolor: 'background.paper',
+    border: '2px solid #000',
+    boxShadow: 24,
+    p: 4,
+  };
   const [report, setReportData] = useState()
   const [time, setDate] = useState(1);
   const [order, setOrderData] = useState([])
   const [shipment, setShipmentData] = useState([])
   const [products, setProductsData] = useState([])
   const [loader, setLoader] = useState(false)
-
+  const [snackbar, setSnackbar] = useState(false)
   const [open, setOpen] = React.useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
@@ -48,6 +58,33 @@ function Dashboard() {
   const [value2, onChange2] = useState();
   const [tags, setTags] = useState([]);
   const [reportLoader, setReportLoader] = useState(false)
+
+  const closeSuccessSB = () => setSnackbar(false)
+
+  const renderSuccessSB = (
+    <MDSnackbar
+      color="success"
+      icon="check"
+      title="Message"
+      content="Message Sent Successfully"
+      open={snackbar}
+      onClose={closeSuccessSB}
+      close={closeSuccessSB}
+      bgWhite
+    />
+  );
+
+
+
+  const date = new Date();
+  const day = ("0" + (date.getDate() - 2)).slice(-2);
+  const week = ("0" + (date.getDate() - 8)).slice(-2);
+  const starting = '01'
+  const month = ("0" + (date.getMonth() + 1)).slice(-2);
+  const year = date.getFullYear();
+
+  var startDate = time === 1 ? year + '-' + month + '-' + day + 'T' + '00:00' : time === 2 ? year + '-' + month + '-' + week + 'T' + '00:00' : year + '-' + month + '-' + starting + 'T' + '00:00'
+  var endDate = time === 1 ? year + '-' + month + '-' + day + 'T' + '23:59' : time === 2 ? year + '-' + month + '-' + day + 'T' + '23:59' : year + '-' + month + '-' + day + 'T' + '23:59'
 
 
   const geReport = () => {
@@ -99,7 +136,6 @@ function Dashboard() {
 
     axios.get(`https://ssapi.shipstation.com/shipments?storeId=683661&createDateStart=${value + 'T' + '00:00'}&createDateEnd=${value2 + 'T' + '23:59'}`, { headers })
       .then(async response => {
-        console.log("shipments", response.data.shipments)
         let shipmentData = await response.data.shipments.map((x) => {
           const dateTime = new Date(x.createDate);
           const options = {
@@ -148,8 +184,6 @@ function Dashboard() {
 
   const sendReport = async () => {
     setReportLoader(true)
-    console.log("tags", tags)
-    console.log("working")
     const table = `<div class="image-container" style="height:100%; max-width: 1200px;
     margin: 0 auto;  background-color: lightgray;"><h1 class="report-date hide-text" style="background-color: lightgray;
     border: 1px solid grey;
@@ -161,7 +195,7 @@ function Dashboard() {
     text-align:center;
     font-family: 'Poppins', sans-serif;
     font-weight:bold;
-    font-size:24px;"><span class="fr"> Amazon </span> <span class="fr"> sales </span> <span class="fr"> report </span> <span class="fr"> from </span> <span class="fr">${value}</span> to <span class="to">${value2}</span>
+    font-size:24px;"><span class="fr"> Amazon </span> <span class="fr"> sales </span> <span class="fr"> report </span> <span class="fr"> from </span> <span class="fr">${value === undefined ? startDate.split("T")[0] : value}</span> to <span class="to">${value2 === undefined ? endDate.split("T")[0] : value2}</span>
     </h1>
     <table id="customers" style="height:100%; border-collapse: collapse;
       width: 100%;">
@@ -244,12 +278,12 @@ function Dashboard() {
     iframeDocument.body.style.margin = '0';
     iframeDocument.close();
 
-    console.log("", iframeDocument)
+
 
     html2canvas(iframeDocument.body).then(async function (canvas) {
       // Convert the canvas to a data URL
       const dataURL = canvas.toDataURL();
-      console.log("data", dataURL)
+
 
       await makeFetchRequests(dataURL, tags, iframe)
     }).catch((error) => console.log("error", error));
@@ -269,8 +303,7 @@ function Dashboard() {
     });
 
     if (response.status === 200) {
-      alert("message sent")
-      console.log("here")
+      setSnackbar(true)
       setReportLoader(false)
       setOpen(false)
       iframe.style.display = 'none';
@@ -333,16 +366,6 @@ function Dashboard() {
   };
   var re = new RegExp('^-?\\d+(?:\.\\d{0,' + (2 || -1) + '})?');
   useEffect(() => {
-    const date = new Date();
-    const day = ("0" + (date.getDate() - 2)).slice(-2);
-    const week = ("0" + (date.getDate() - 8)).slice(-2);
-    const starting = '01'
-    const month = ("0" + (date.getMonth() + 1)).slice(-2);
-    const year = date.getFullYear();
-
-    const startDate = time === 1 ? year + '-' + month + '-' + day + 'T' + '00:00' : time === 2 ? year + '-' + month + '-' + week + 'T' + '00:00' : year + '-' + month + '-' + starting + 'T' + '00:00'
-    const endDate = time === 1 ? year + '-' + month + '-' + day + 'T' + '23:59' : time === 2 ? year + '-' + month + '-' + day + 'T' + '23:59' : year + '-' + month + '-' + day + 'T' + '23:59'
-
     axios.post('https://insight.roheex.com/getReport', { startDate: startDate, endDate: endDate }, {
       headers: {
         'Authorization': `Bearer ${localStorage.getItem('token')}`
@@ -389,7 +412,7 @@ function Dashboard() {
 
     axios.get(`https://ssapi.shipstation.com/shipments?storeId=683661&createDateStart=${startDate}&createDateEnd=${endDate}`, { headers })
       .then(async response => {
-        console.log("shipments", response.data.shipments)
+
         let shipmentData = await response.data.shipments.map((x) => {
           const dateTime = new Date(x.createDate);
           const options = {
@@ -439,7 +462,6 @@ function Dashboard() {
   const { sales, tasks } = reportsLineChartData;
 
   if (Array.isArray(report) && report.length > 0) {
-    console.log("here again")
     var sanmarcost = report[0].reduce(function (acc, obj) { return acc + parseInt(obj['Sanmar Ship Cost']); }, 0);
     var alphacost = report[0].reduce(function (acc, obj) { return acc + parseInt(obj['Alpha Ship Cost']); }, 0);
     var result = report[0].reduce(function (acc, obj) { return acc + parseInt(obj['Total Orders']); }, 0);
@@ -471,52 +493,57 @@ function Dashboard() {
       <Grid container spacing={6}>
 
         <Grid item xs={12}>
+            <div>
+              <FormControl fullWidth style={{ marginLeft: '10px', marginTop: '20px', marginBottom: '20px' }}>
+                <InputLabel id="demo-simple-select-label">Select Time</InputLabel>
+                <Select
+                  labelId="demo-simple-select-label"
+                  id="demo-simple-select"
+                  value={time}
+                  label="Select Time"
+                  onChange={handleChange}
+                  style={{ width: '150px', height: '45px' }}
 
-        <FormControl fullWidth style={{ marginLeft: '10px', marginTop: '20px', marginBottom: '20px' }}>
-        <InputLabel id="demo-simple-select-label">Select Time</InputLabel>
-        <Select
-          labelId="demo-simple-select-label"
-          id="demo-simple-select"
-          value={time}
-          label="Select Time"
-          onChange={handleChange}
-          style={{ width: '150px', height: '45px' }}
-
-        >
-          <MenuItem value={1}>Today</MenuItem>
-          <MenuItem value={2}>Week</MenuItem>
-          <MenuItem value={3}>Month</MenuItem>
-        </Select>
-      </FormControl>
-
-          <Card className='custom-card-style'>
-            <div className='flex'>
-
-              <MDTypography variant="h5" >
-                From:
-              </MDTypography>
-              {/* <Calendar onChange={onChange} value={value} /> */}
-              <input type="date" onChange={(e) => onChange(e.target.value)} value={value} />
+                >
+                  <MenuItem value={1}>Today</MenuItem>
+                  <MenuItem value={2}>Week</MenuItem>
+                  <MenuItem value={3}>Month</MenuItem>
+                </Select>
+              </FormControl>
             </div>
+          <Card className='custom-card-style'>
+            <div className="flex">
+            <div className="flex">
+              <div className='flex margin-right'>
 
-            <div className='flex'>
+                <MDTypography variant="h5" >
+                  From:
+                </MDTypography>
+                {/* <Calendar onChange={onChange} value={value} /> */}
+                <input type="date" onChange={(e) => onChange(e.target.value)} value={value} />
+              </div>
+            
+            <div className='flex margin-right'>
               <MDTypography variant="h5" >
                 To:
               </MDTypography>
               {/* <Calendar onChange={onChange2} value={value2} /> */}
               <input type="date" onChange={(e) => onChange2(e.target.value)} value={value2} />
             </div>
-
-            <div>
-              <button className='custom-btn' onClick={() => geReport()}><MDTypography variant="h6" color="white">
-                Get Report
-              </MDTypography></button>
             </div>
+            <div className="flex">
+              <div>
+                <button className='custom-btn' onClick={() => geReport()}><MDTypography variant="h6" color="white">
+                  Get Report
+                </MDTypography></button>
+              </div>
 
-            <div>
-              <button className='custom-btn' onClick={() => handleOpen()}><MDTypography variant="h6" color="white">
-                Send Report
-              </MDTypography></button>
+              <div>
+                <button className='custom-btn no-margin' onClick={() => handleOpen()}><MDTypography variant="h6" color="white">
+                  Send Report
+                </MDTypography></button>
+              </div>
+            </div>
             </div>
           </Card>
         </Grid>
@@ -746,6 +773,40 @@ function Dashboard() {
           </MDBox>}
       </MDBox>
       {/* <Footer /> */}
+      <div>
+        <Modal
+          open={open}
+          onClose={handleClose}
+          aria-labelledby="modal-modal-title"
+          aria-describedby="modal-modal-description"
+        >
+          <Box sx={style} className="modal-cont">
+            <MDTypography variant="h5" color="black">
+              Add numbers to send report
+            </MDTypography>
+
+            <MDTypography variant="p" className="custom-p" color="black">
+              Note : Press enter after every number
+            </MDTypography>
+            <Typography id="modal-modal-description" sx={{ mt: 2 }} className="modal-cont">
+              <TagsInput value={tags} onChange={handleTags} inputProps={{ placeholder: 'Add number' }} validate={validate} />
+              <button className='custom-btn custom-btn-send' onClick={() => sendReport()}><MDTypography variant="h6" color="white">
+                {reportLoader ? <Dna
+                  visible={true}
+                  height="26"
+                  width="36"
+                  ariaLabel="dna-loading"
+                  wrapperStyle={{}}
+                  wrapperClass="dna-wrapper"
+                /> : "Send"}
+              </MDTypography></button>
+            </Typography>
+          </Box>
+        </Modal>
+      </div>
+
+      {renderSuccessSB}
+
     </DashboardLayout>
   );
 }

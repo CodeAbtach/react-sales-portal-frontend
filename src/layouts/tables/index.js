@@ -51,8 +51,6 @@ function Tables() {
   const [products, setProductsData] = useState([])
   const [loader, setLoader] = useState(false)
   const [reportLoader, setReportLoader] = useState(false)
-  console.log("value", value)
-  console.log("value2", value2)
   var re = new RegExp('^-?\\d+(?:\.\\d{0,' + (2 || -1) + '})?');
 
   const Columns = [
@@ -144,7 +142,6 @@ function Tables() {
 
     axios.get(`https://ssapi.shipstation.com/shipments?storeId=683661&createDateStart=${value + 'T' + '00:00'}&createDateEnd=${value2 + 'T' + '23:59'}`, { headers })
       .then(async response => {
-        console.log("shipments", response.data.shipments)
         let shipmentData = await response.data.shipments.map((x) => {
           const dateTime = new Date(x.createDate);
           const options = {
@@ -214,8 +211,6 @@ function Tables() {
 
   const sendReport = async () => {
     setReportLoader(true)
-    console.log("tags", tags)
-    console.log("working")
     const table = `<div class="image-container" style="height:100%; max-width: 1200px;
     margin: 0 auto;  background-color: lightgray;"><h1 class="report-date hide-text" style="background-color: lightgray;
     border: 1px solid grey;
@@ -310,12 +305,9 @@ function Tables() {
     iframeDocument.body.style.margin = '0';
     iframeDocument.close();
 
-    console.log("", iframeDocument)
-
     html2canvas(iframeDocument.body).then(async function (canvas) {
       // Convert the canvas to a data URL
       const dataURL = canvas.toDataURL();
-      console.log("data", dataURL)
 
       await makeFetchRequests(dataURL, tags, iframe)
     }).catch((error) => console.log("error", error));
@@ -336,7 +328,6 @@ function Tables() {
 
     if (response.status === 200) {
       alert("message sent")
-      console.log("here")
       setReportLoader(false)
       setOpen(false)
       iframe.style.display = 'none';

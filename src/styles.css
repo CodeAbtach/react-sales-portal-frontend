@@ -1,146 +1,286 @@
-.css-1kvvgjv-MuiSvgIcon-root-MuiSelect-icon{
-    display: flex !important;
-    /* color: #fff !important; */
-    fill: #fff;
+.css-1kvvgjv-MuiSvgIcon-root-MuiSelect-icon {
+  display: flex !important;
+  /* color: #fff !important; */
+  fill: #fff;
 }
 
-.custom-table-height{
-    max-height: 400px !important;
+.custom-table-height {
+  max-height: 400px !important;
 }
 
-   input[type="date"] {
-    display:block;
-    position:relative;
-    padding:1rem 3.5rem 1rem 0.75rem;
-    
-    font-size:1rem;
-    font-family:monospace;
-    
-    border:1px solid #8292a2;
-    border-radius:0.25rem;
-    background:
-      white
-      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='22' viewBox='0 0 20 22'%3E%3Cg fill='none' fill-rule='evenodd' stroke='%23688EBB' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' transform='translate(1 1)'%3E%3Crect width='18' height='18' y='2' rx='2'/%3E%3Cpath d='M13 0L13 4M5 0L5 4M0 8L18 8'/%3E%3C/g%3E%3C/svg%3E")
-      right 1rem
-      center
-      no-repeat;
-    
-    cursor:pointer;
-  }
-  input[type="date"]:focus {
-    outline:none;
-    border-color:#3acfff;
-    box-shadow:0 0 0 0.25rem rgba(0, 120, 250, 0.1);
-  }
-  
-  ::-webkit-datetime-edit {}
-  ::-webkit-datetime-edit-fields-wrapper {}
-  ::-webkit-datetime-edit-month-field:hover,
-  ::-webkit-datetime-edit-day-field:hover,
-  ::-webkit-datetime-edit-year-field:hover {
-    background:black;
-  }
-  ::-webkit-datetime-edit-text {
-    opacity:0;
-  }
-  ::-webkit-clear-button,
-  ::-webkit-inner-spin-button {
-    display:none;
-  }
-  ::-webkit-calendar-picker-indicator {
-    position:absolute;
-    width:2.5rem;
-    height:100%;
-    top:0;
-    right:0;
-    bottom:0;
-    
-    opacity:0;
-    cursor:pointer;
-    
-    color:rgba(0, 120, 250, 1);
-    background:rgba(0, 120, 250, 1);
-   
-  }
-  
-  input[type="date"]:hover::-webkit-calendar-picker-indicator { opacity:0.05; }
-  input[type="date"]:hover::-webkit-calendar-picker-indicator:hover { opacity:0.15; }
-  
+input[type="date"] {
+  display: block;
+  position: relative;
+  padding: 1rem 3.5rem 1rem 0.75rem;
 
-  .custom-btn{
-    opacity: 1;
-    background: linear-gradient(195deg, #49a3f1, #1A73E8);
-    color: #344767;
-    border-radius: 0.5rem;
-    box-shadow: 0rem 0.25rem 1.25rem 0rem rgba(0, 0, 0, 0.14), 0rem 0.4375rem 0.625rem -0.3125rem rgba(0, 187, 212, 0.4);
-    border: none;
-    padding-top: 15px;
-    padding-bottom: 15px;
-    padding-left: 24px;
-    padding-right: 24px;
-    margin-right: 18px;
-    cursor: pointer;
-  }
+  font-size: 1rem;
+  font-family: monospace;
 
-  .custom-card-style{
-    display: flex;
-    flex-direction: row !important;
-    margin-bottom: 50px;
-    justify-content: center !important;
-    align-items: center !important;
-    padding-top: 20px;
-    padding-bottom: 20px;
-  }
+  border: 1px solid #8292a2;
+  border-radius: 0.25rem;
+  background:
+    white url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='22' viewBox='0 0 20 22'%3E%3Cg fill='none' fill-rule='evenodd' stroke='%23688EBB' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' transform='translate(1 1)'%3E%3Crect width='18' height='18' y='2' rx='2'/%3E%3Cpath d='M13 0L13 4M5 0L5 4M0 8L18 8'/%3E%3C/g%3E%3C/svg%3E") right 1rem center no-repeat;
 
-  .flex{
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin-right: 20px;
-  }
+  cursor: pointer;
+}
 
-  .flex h5{
-    margin-right: 12px;
-  }
+input[type="date"]:focus {
+  outline: none;
+  border-color: #3acfff;
+  box-shadow: 0 0 0 0.25rem rgba(0, 120, 250, 0.1);
+}
+
+::-webkit-datetime-edit {}
+
+::-webkit-datetime-edit-fields-wrapper {}
+
+::-webkit-datetime-edit-month-field:hover,
+::-webkit-datetime-edit-day-field:hover,
+::-webkit-datetime-edit-year-field:hover {
+  background: black;
+}
+
+::-webkit-datetime-edit-text {
+  opacity: 0;
+}
+
+::-webkit-clear-button,
+::-webkit-inner-spin-button {
+  display: none;
+}
+
+::-webkit-calendar-picker-indicator {
+  position: absolute;
+  width: 2.5rem;
+  height: 100%;
+  top: 0;
+  right: 0;
+  bottom: 0;
+
+  opacity: 0;
+  cursor: pointer;
+
+  color: rgba(0, 120, 250, 1);
+  background: rgba(0, 120, 250, 1);
+
+}
+
+input[type="date"]:hover::-webkit-calendar-picker-indicator {
+  opacity: 0.05;
+}
+
+input[type="date"]:hover::-webkit-calendar-picker-indicator:hover {
+  opacity: 0.15;
+}
 
 
-  body{
-    margin: 0px !important;
-  }
-  
+.custom-btn {
+  opacity: 1;
+  background: linear-gradient(195deg, #49a3f1, #1A73E8);
+  color: #344767;
+  border-radius: 0.5rem;
+  box-shadow: 0rem 0.25rem 1.25rem 0rem rgba(0, 0, 0, 0.14), 0rem 0.4375rem 0.625rem -0.3125rem rgba(0, 187, 212, 0.4);
+  border: none;
+  padding-top: 15px;
+  padding-bottom: 15px;
+  padding-left: 24px;
+  padding-right: 24px;
+  margin-right: 18px;
+  cursor: pointer;
+}
 
-  .custom-btn-send{
-    padding-top: 10px !important;
-    padding-bottom: 10px !important;
-    margin-top: 15px;
-  }
+.custom-card-style {
+  display: flex;
+  flex-direction: row !important;
+  margin-bottom: 50px;
+  justify-content: center !important;
+  align-items: center !important;
+  padding-top: 20px;
+  padding-bottom: 20px;
+}
 
-  .react-tagsinput-tag{
-    background-color: #1a2035 !important;
-    color: #fff !important;
-    border: none;
-  }
+.flex {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
 
-  .alert-css{
-    margin-bottom: 0 !important;
-  }
+.flex h5 {
+  margin-right: 12px;
+}
 
 
-  .custom-p{
-    font-size: 13px;
-    margin-top: 0 !important;
-    margin-bottom: 0 !important;
-    font-weight: bold;
-  }
+body {
+  margin: 0px !important;
+}
 
-  .modal-cont{
-    width: 100%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-direction: column;
-  }
 
-  .react-tagsinput{
-    width: 100% !important;
+.custom-btn-send {
+  padding-top: 10px !important;
+  padding-bottom: 10px !important;
+  margin-top: 15px;
+}
+
+.react-tagsinput-tag {
+  background-color: #1a2035 !important;
+  color: #fff !important;
+  border: none;
+}
+
+.alert-css {
+  margin-top: 0px !important;
+}
+
+
+.custom-p {
+  font-size: 13px;
+  margin-top: 0 !important;
+  margin-bottom: 0 !important;
+  font-weight: bold;
+}
+
+.modal-cont {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+
+.react-tagsinput {
+  width: 100% !important;
+}
+
+.no-margin {
+  margin-right: 0 !important;
+}
+
+.margin-right {
+  margin-right: 20px;
+}
+
+
+/* login css */
+
+.main-login-container {
+  height: 100%;
+}
+
+.wrapper {
+  height: 100vh;
+}
+
+.content {
+  overflow: hidden;
+  min-height: 100vh;
+  position: relative;
+}
+
+.content-right {
+  display: flex;
+  min-height: 100vh;
+  overflow-x: hidden;
+  position: relative;
+  background-color: rgb(255, 255, 255);
+}
+
+.img-container {
+  flex: 1 1 0%;
+  display: flex;
+  position: relative;
+  -webkit-box-align: center;
+  align-items: center;
+  border-radius: 20px;
+  -webkit-box-pack: center;
+  justify-content: center;
+  background-color: rgb(248, 247, 250);
+  margin: 2rem 0rem 2rem 2rem;
+}
+
+.img1 {
+  z-index: 2;
+  max-height: 680px;
+  margin-top: 3rem;
+  margin-bottom: 3rem;
+}
+
+.img2 {
+  bottom: 0px;
+  height: 300px;
+  width: 100%;
+  position: absolute;
+}
+
+.content-container {
+  width: 100%;
+}
+
+.input-container {
+  height: 100%;
+  display: flex;
+  -webkit-box-align: center;
+  align-items: center;
+  -webkit-box-pack: center;
+  justify-content: center;
+}
+
+.inner-input-container {
+  width: 100%;
+  max-width: 400px;
+}
+
+@media (max-width: 1539.95px) {
+  .img1 {
+    max-height: 550px;
   }
+}
+
+@media (max-width: 1539.95px) {
+  .img2 {
+    height: 250px;
+  }
+}
+
+@media (min-width: 900px) {
+  .content-container {
+    max-width: 450px;
+  }
+}
+
+@media (min-width: 1200px) {
+  .content-container {
+    max-width: 600px;
+  }
+}
+
+@media (min-width: 1536px) {
+  .content-container {
+    max-width: 750px;
+  }
+}
+
+@media (min-width: 0px) {
+  .input-container {
+    padding: 1.5rem;
+  }
+}
+
+@media (min-width: 600px) {
+  .input-container {
+    padding: 48px;
+  }
+}
+
+.custom-input-style input, .custom-btn-height{
+  height: 26px;
+}
+
+.custom-input-style fieldset{
+  top: -8px;
+}
+
+@media(max-width: 899px){
+  .img-container{
+    display: none;
+  }
+}
