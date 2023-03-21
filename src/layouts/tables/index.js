@@ -132,7 +132,7 @@ function Tables() {
             Price: `${'$' + x.amountPaid}`,
             Date: readableDateTime,
             "Tax Amount": `${'$' + x.taxAmount}`,
-            "Amazon Fees": `${'$' + (x.amountPaid - (x.amountPaid * 0.83)).toString().match(re)[0]}`
+            "Amazon Fees": `${'$' + ((x.amountPaid - x.taxAmount) - ((x.amountPaid - x.taxAmount) * 0.83)).toString().match(re)[0]}`
           }
         })
 

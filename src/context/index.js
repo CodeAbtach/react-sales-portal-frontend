@@ -61,13 +61,13 @@ function MaterialUIControllerProvider({ children }) {
     miniSidenav: false,
     transparentSidenav: false,
     whiteSidenav: false,
-    sidenavColor: "info",
+    sidenavColor: "warning",
     transparentNavbar: true,
-    fixedNavbar: true,
+    fixedNavbar: false,
     openConfigurator: false,
     direction: "ltr",
     layout: "dashboard",
-    darkMode: true,
+    darkMode: false,
   };
 
   const [controller, dispatch] = useReducer(reducer, initialState);

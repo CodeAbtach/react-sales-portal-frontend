@@ -22,7 +22,7 @@ import reportsLineChartData from "layouts/dashboard/data/reportsLineChartData";
 // Dashboard components
 import Projects from "layouts/dashboard/components/Projects";
 import OrdersOverview from "layouts/dashboard/components/OrdersOverview";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
 import Box from '@mui/material/Box';
 import InputLabel from '@mui/material/InputLabel';
@@ -40,8 +40,255 @@ function Dashboard() {
   const [shipment, setShipmentData] = useState([])
   const [products, setProductsData] = useState([])
   const [loader, setLoader] = useState(false)
-  
 
+  const [open, setOpen] = React.useState(false);
+  const handleOpen = () => setOpen(true);
+  const handleClose = () => setOpen(false);
+  const [value, onChange] = useState();
+  const [value2, onChange2] = useState();
+  const [tags, setTags] = useState([]);
+  const [reportLoader, setReportLoader] = useState(false)
+
+
+  const geReport = () => {
+    setLoader(true)
+    closeLoaderIn5Seconds()
+    axios.post('https://insight.roheex.com/getReport', { startDate: value + 'T' + '00:00', endDate: value2 + 'T' + '23:59' }, {
+      headers: {
+        'Authorization': `Bearer ${localStorage.getItem('token')}`
+      }
+    }).then((res) => setReportData(res.data)).catch((error) => console.log("error", error))
+
+
+    const username = process.env.REACT_APP_USERNAME;
+    const password = process.env.REACT_APP_PASSWORD;
+
+    const headers = {
+      Authorization: `Basic ${btoa(`${username}:${password}`)}`
+    };
+
+    axios.get(`https://ssapi.shipstation.com/orders?storeId=683661&orderDateStart=${value + 'T' + '00:00'}&orderDateEnd=${value2 + 'T' + '23:59'}`, { headers })
+      .then(async response => {
+        let orderData = await response.data.orders.map((x) => {
+          const dateTime = new Date(x.orderDate);
+          const options = {
+            year: 'numeric',
+            month: 'numeric',
+            day: 'numeric',
+            hour: 'numeric',
+            minute: 'numeric',
+            second: 'numeric'
+          };
+
+          const formatter = new Intl.DateTimeFormat('en-US', options);
+          const readableDateTime = formatter.format(dateTime);
+          return {
+            "Order No": x.orderNumber,
+            Price: `${'$' + x.amountPaid}`,
+            Date: readableDateTime,
+            "Tax Amount": `${'$' + x.taxAmount}`,
+            "Amazon Fees": `${'$' + ((x.amountPaid - x.taxAmount) - ((x.amountPaid - x.taxAmount) * 0.83)).toString().match(re)[0]}`
+          }
+        })
+
+        setOrderData(orderData)
+      })
+      .catch(error => {
+        console.error(error);
+      });
+
+    axios.get(`https://ssapi.shipstation.com/shipments?storeId=683661&createDateStart=${value + 'T' + '00:00'}&createDateEnd=${value2 + 'T' + '23:59'}`, { headers })
+      .then(async response => {
+        console.log("shipments", response.data.shipments)
+        let shipmentData = await response.data.shipments.map((x) => {
+          const dateTime = new Date(x.createDate);
+          const options = {
+            year: 'numeric',
+            month: 'numeric',
+            day: 'numeric',
+            hour: 'numeric',
+            minute: 'numeric',
+            second: 'numeric'
+          };
+
+          const formatter = new Intl.DateTimeFormat('en-US', options);
+          const readableDateTime = formatter.format(dateTime);
+          return {
+            "Order No": x.orderNumber,
+            "Cost": x.shipmentCost,
+            "Date": readableDateTime
+          }
+        })
+
+        setShipmentData(shipmentData)
+      })
+      .catch(error => {
+        console.error(error);
+      });
+
+    axios.post('https://insight.roheex.com/getProducts', { startDate: value + 'T' + '00:00', endDate: value2 + 'T' + '00:00' }, {
+      headers: {
+        'Authorization': `Bearer ${localStorage.getItem('token')}`
+      }
+    }).then(async res => {
+      let productData = await res.data[0].map((x) => {
+        return {
+          "Items": x.Items,
+          "Price": x.Price,
+          "Quantity": x.Quantity,
+          "Total": (x.Quantity * x.Price).toString().match(re)[0],
+          "Vendor": x.Vendor
+        }
+      })
+
+      setProductsData(productData)
+    })
+  }
+
+
+  const sendReport = async () => {
+    setReportLoader(true)
+    console.log("tags", tags)
+    console.log("working")
+    const table = `<div class="image-container" style="height:100%; max-width: 1200px;
+    margin: 0 auto;  background-color: lightgray;"><h1 class="report-date hide-text" style="background-color: lightgray;
+    border: 1px solid grey;
+    margin-bottom: -3px !important;
+    margin-top: 0 !important;
+    border-bottom: 0px !important;
+    padding-bottom: 10px;
+    padding-top: 10px;
+    text-align:center;
+    font-family: 'Poppins', sans-serif;
+    font-weight:bold;
+    font-size:24px;"><span class="fr"> Amazon </span> <span class="fr"> sales </span> <span class="fr"> report </span> <span class="fr"> from </span> <span class="fr">${value}</span> to <span class="to">${value2}</span>
+    </h1>
+    <table id="customers" style="height:100%; border-collapse: collapse;
+      width: 100%;">
+        <tr>
+            <th style="font-family: 'Poppins', sans-serif; font-weight:bold; padding-top: 15px !important;
+            padding-bottom: 15px !important;
+            text-align: left;
+            background-color: #4779c4;
+            color: white;
+            font-size: 24px;border: 1px solid #ddd;
+            padding: 8px;">NO. OF ORDERS</th>
+            <th style="font-family: 'Poppins', sans-serif; font-weight:bold; padding-top: 15px !important;
+            padding-bottom: 15px !important;
+            text-align: left;
+            background-color: #4779c4;
+            color: white;
+            font-size: 24px;border: 1px solid #ddd;
+            padding: 8px;">SALES</th>
+            <th style="font-family: 'Poppins', sans-serif; font-weight:bold; padding-top: 15px !important;
+            padding-bottom: 15px !important;
+            text-align: left;
+            background-color: #4779c4;
+            color: white;
+            font-size: 24px;border: 1px solid #ddd;
+            padding: 8px;">COST</th>
+            <th style="font-family: 'Poppins', sans-serif; font-weight:bold; padding-top: 15px !important;
+            padding-bottom: 15px !important;
+            text-align: left;
+            background-color: #4779c4;
+            color: white;
+            font-size: 24px; border: 1px solid #ddd;
+            padding: 8px;">GROSS PROFIT</th>
+        </tr>
+
+        <tr>
+        <td style="font-family: 'Poppins', sans-serif; border-bottom:0 !important; background-color: #fff; padding-top: 15px !important;
+        padding-bottom: 15px !important;
+        font-size: 24px; border: 1px solid #ddd;
+        padding: 8px;" id="order">${result}</td>
+        <td style="font-family: 'Poppins', sans-serif; border-bottom:0 !important; background-color: #fff; padding-top: 15px !important;
+        padding-bottom: 15px !important;
+        font-size: 24px; border: 1px solid #ddd;
+        padding: 8px;" id="sales">$${parseFloat(totalSales.toString().match(re)[0]).toLocaleString()}</td>
+        <td style="font-family: 'Poppins', sans-serif; border-bottom:0 !important; background-color: #fff; padding-top: 15px !important;
+        padding-bottom: 15px !important;
+        font-size: 24px; border: 1px solid #ddd;
+        padding: 8px;" id="cost">$${parseFloat(cost.toString().match(re)[0]).toLocaleString()}</td>
+        <td style="font-family: 'Poppins', sans-serif; border-bottom:0 !important; background-color: #fff; padding-top: 15px !important;
+        padding-bottom: 15px !important;
+        font-size: 24px; border: 1px solid #ddd;
+        padding: 8px;" id="gross">$${parseFloat(profit.toString().match(re)[0]).toLocaleString()}</td>
+        </tr>
+    </table></div>`;
+
+    const iframe = document.createElement('iframe');
+    iframe.style.visibility = 'hidden';
+    document.body.appendChild(iframe);
+
+    const iframeWindow = iframe.contentWindow;
+    const iframeDocument = iframeWindow.document;
+
+    iframe.style.width = '800px'
+    iframe.style.border = 'none'
+    iframeDocument.open();
+
+    iframeDocument.write(`
+    <html>
+      <head>
+        <style>
+          body {
+            margin: 0px;
+          }
+        </style>
+      </head>
+      <body>
+        ${table}
+      </body>
+    </html>
+  `);
+    iframeDocument.body.style.margin = '0';
+    iframeDocument.close();
+
+    console.log("", iframeDocument)
+
+    html2canvas(iframeDocument.body).then(async function (canvas) {
+      // Convert the canvas to a data URL
+      const dataURL = canvas.toDataURL();
+      console.log("data", dataURL)
+
+      await makeFetchRequests(dataURL, tags, iframe)
+    }).catch((error) => console.log("error", error));
+
+  }
+
+
+  async function makeFetchRequests(image, numbers, iframe) {
+    const response = await fetch('https://insight.roheex.com/sendMessage', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${localStorage.getItem('token')}`
+
+      },
+      body: JSON.stringify({ "image": image, "filename": "report.png", "numbers": numbers })
+    });
+
+    if (response.status === 200) {
+      alert("message sent")
+      console.log("here")
+      setReportLoader(false)
+      setOpen(false)
+      iframe.style.display = 'none';
+    }
+    else {
+      setOpen(false)
+      setReportLoader(false)
+      alert("error sending message")
+    }
+  }
+
+  const handleTags = (tags) => {
+    setTags(tags);
+  };
+
+  const validate = (tag) => {
+    return /^\d+$/.test(tag);
+  };
 
   const Columns = [
     { Header: "Order No", accessor: "Order No", width: "35%", align: "left" },
@@ -129,7 +376,7 @@ function Dashboard() {
             Price: `${'$' + x.amountPaid}`,
             Date: readableDateTime,
             "Tax Amount": `${'$' + x.taxAmount}`,
-            "Amazon Fees": `${'$' + (x.amountPaid - (x.amountPaid * 0.83)).toString().match(re)[0]}`
+            "Amazon Fees": `${'$' + ((x.amountPaid - x.taxAmount) - ((x.amountPaid - x.taxAmount) * 0.83)).toString().match(re)[0]}`
           }
         })
 
@@ -192,6 +439,7 @@ function Dashboard() {
   const { sales, tasks } = reportsLineChartData;
 
   if (Array.isArray(report) && report.length > 0) {
+    console.log("here again")
     var sanmarcost = report[0].reduce(function (acc, obj) { return acc + parseInt(obj['Sanmar Ship Cost']); }, 0);
     var alphacost = report[0].reduce(function (acc, obj) { return acc + parseInt(obj['Alpha Ship Cost']); }, 0);
     var result = report[0].reduce(function (acc, obj) { return acc + parseInt(obj['Total Orders']); }, 0);
@@ -219,7 +467,12 @@ function Dashboard() {
   return (
     <DashboardLayout>
       <DashboardNavbar />
-      <FormControl fullWidth style={{ marginLeft: '10px', marginTop: '20px', marginBottom: '20px' }}>
+
+      <Grid container spacing={6}>
+
+        <Grid item xs={12}>
+
+        <FormControl fullWidth style={{ marginLeft: '10px', marginTop: '20px', marginBottom: '20px' }}>
         <InputLabel id="demo-simple-select-label">Select Time</InputLabel>
         <Select
           labelId="demo-simple-select-label"
@@ -235,6 +488,39 @@ function Dashboard() {
           <MenuItem value={3}>Month</MenuItem>
         </Select>
       </FormControl>
+
+          <Card className='custom-card-style'>
+            <div className='flex'>
+
+              <MDTypography variant="h5" >
+                From:
+              </MDTypography>
+              {/* <Calendar onChange={onChange} value={value} /> */}
+              <input type="date" onChange={(e) => onChange(e.target.value)} value={value} />
+            </div>
+
+            <div className='flex'>
+              <MDTypography variant="h5" >
+                To:
+              </MDTypography>
+              {/* <Calendar onChange={onChange2} value={value2} /> */}
+              <input type="date" onChange={(e) => onChange2(e.target.value)} value={value2} />
+            </div>
+
+            <div>
+              <button className='custom-btn' onClick={() => geReport()}><MDTypography variant="h6" color="white">
+                Get Report
+              </MDTypography></button>
+            </div>
+
+            <div>
+              <button className='custom-btn' onClick={() => handleOpen()}><MDTypography variant="h6" color="white">
+                Send Report
+              </MDTypography></button>
+            </div>
+          </Card>
+        </Grid>
+      </Grid>
 
       <MDBox py={3}>
         <Grid container spacing={3}>
@@ -332,13 +618,13 @@ function Dashboard() {
           </Grid>
         </MDBox>
         {loader ? <div className="modal-cont"><Dna
-                  visible={true}
-                  height="100"
-                  width="100"
-                  ariaLabel="dna-loading"
-                  wrapperStyle={{}}
-                  wrapperClass="dna-wrapper"
-                /></div> :
+          visible={true}
+          height="100"
+          width="100"
+          ariaLabel="dna-loading"
+          wrapperStyle={{}}
+          wrapperClass="dna-wrapper"
+        /></div> :
           <MDBox pt={6} pb={3}>
             <Grid container spacing={6}>
               {Array.isArray(Rows) && Rows.length > 0 ? <Grid item xs={12} md={12}>

@@ -89,13 +89,13 @@ function Configurator() {
   }) => ({
     height: pxToRem(39),
     background: darkMode ? background.sidenav : white.main,
-    color: darkMode ? white.main : dark.main,
-    border: `${borderWidth[1]} solid ${darkMode ? white.main : dark.main}`,
+    color: darkMode ? dark.main : white.main,
+    border: `${borderWidth[1]} solid ${darkMode ? dark.main : white.main}`,
 
     "&:hover, &:focus, &:focus:not(:hover)": {
       background: darkMode ? background.sidenav : white.main,
-      color: darkMode ? white.main : dark.main,
-      border: `${borderWidth[1]} solid ${darkMode ? white.main : dark.main}`,
+      color: darkMode ? dark.main : white.main,
+      border: `${borderWidth[1]} solid ${darkMode ? dark.main : white.main}`,
     },
   });
 
@@ -186,7 +186,7 @@ function Configurator() {
                   },
 
                   "&:hover, &:focus, &:active": {
-                    borderColor: darkMode ? white.main : dark.main,
+                    borderColor: darkMode ? dark.main : white.main,
                   },
                 })}
                 onClick={() => setSidenavColor(dispatch, color)}
