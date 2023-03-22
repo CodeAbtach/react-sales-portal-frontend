@@ -56,7 +56,7 @@ function Basic() {
     else {
       axios.post('https://insight.roheex.com/login', { username: email, password: paswword }).then((response) => {
         if (response.data.token) {
-          window.localStorage.setItem('token', response.data.token)
+          window.localStorage.setItem('Token', response.data.token)
           setToken(response.data.token)
           setError(false)
         }
