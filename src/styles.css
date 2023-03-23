@@ -284,3 +284,8 @@ body {
     display: none;
   }
 }
+
+
+.m-right{
+  margin-right: 20px;
+}

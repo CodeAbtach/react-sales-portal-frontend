@@ -89,12 +89,17 @@ function Dashboard() {
 
   const geReport = () => {
     setLoader(true)
-    closeLoaderIn5Seconds()
     axios.post('https://insight.roheex.com/getReport', { startDate: value + 'T' + '00:00', endDate: value2 + 'T' + '23:59' }, {
       headers: {
         'Authorization': `Bearer ${localStorage.getItem('Token')}`
       }
-    }).then((res) => setReportData(res.data)).catch((error) => console.log("error", error))
+    }).then((res) => {
+      setReportData(res.data)
+      setLoader(false)
+    }).catch((error) => {
+      console.log("error", error)
+      setLoader(false);
+    })
 
 
     const username = process.env.REACT_APP_USERNAME;
