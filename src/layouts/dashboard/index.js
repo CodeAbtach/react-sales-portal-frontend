@@ -92,7 +92,7 @@ function Dashboard() {
     closeLoaderIn5Seconds()
     axios.post('https://insight.roheex.com/getReport', { startDate: value + 'T' + '00:00', endDate: value2 + 'T' + '23:59' }, {
       headers: {
-        'Authorization': `Bearer ${localStorage.getItem('token')}`
+        'Authorization': `Bearer ${localStorage.getItem('Token')}`
       }
     }).then((res) => setReportData(res.data)).catch((error) => console.log("error", error))
 
@@ -164,7 +164,7 @@ function Dashboard() {
 
     axios.post('https://insight.roheex.com/getProducts', { startDate: value + 'T' + '00:00', endDate: value2 + 'T' + '00:00' }, {
       headers: {
-        'Authorization': `Bearer ${localStorage.getItem('token')}`
+        'Authorization': `Bearer ${localStorage.getItem('Token')}`
       }
     }).then(async res => {
       let productData = await res.data[0].map((x) => {
@@ -296,7 +296,7 @@ function Dashboard() {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${localStorage.getItem('token')}`
+        'Authorization': `Bearer ${localStorage.getItem('Token')}`
 
       },
       body: JSON.stringify({ "image": image, "filename": "report.png", "numbers": numbers })
@@ -362,13 +362,13 @@ function Dashboard() {
   const closeLoaderIn5Seconds = () => {
     setTimeout(() => {
       setLoader(false);
-    }, 1500);
+    }, 1800);
   };
   var re = new RegExp('^-?\\d+(?:\.\\d{0,' + (2 || -1) + '})?');
   useEffect(() => {
     axios.post('https://insight.roheex.com/getReport', { startDate: startDate, endDate: endDate }, {
       headers: {
-        'Authorization': `Bearer ${localStorage.getItem('token')}`
+        'Authorization': `Bearer ${localStorage.getItem('Token')}`
       }
     }).then((res) => setReportData(res.data)).catch((error) => console.log("error", error))
 
@@ -442,7 +442,7 @@ function Dashboard() {
 
     axios.post('https://insight.roheex.com/getProducts', { startDate: startDate, endDate: endDate }, {
       headers: {
-        'Authorization': `Bearer ${localStorage.getItem('token')}`
+        'Authorization': `Bearer ${localStorage.getItem('Token')}`
       }
     }).then(async res => {
       let productData = await res.data[0].map((x) => {

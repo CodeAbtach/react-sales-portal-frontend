@@ -8,13 +8,11 @@ import MDBox from "components/MDBox";
 // Material Dashboard 2 React example components
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
 import DashboardNavbar from "examples/Navbars/DashboardNavbar";
-import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
 
 import MDTypography from "components/MDTypography";
 
 // Amazon Sales ReportReact example components
-import Footer from "../../examples/Footer";
 import axios from "axios";
 import DataTable from "../../examples/Tables/DataTable";
 import TagsInput from 'react-tagsinput'
@@ -22,10 +20,10 @@ import TagsInput from 'react-tagsinput'
 import 'react-tagsinput/react-tagsinput.css'
 import html2canvas from 'html2canvas';
 import Box from '@mui/material/Box';
-import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import Modal from '@mui/material/Modal';
-import { Dna, InfinitySpin } from 'react-loader-spinner'
+import { Dna } from 'react-loader-spinner';
+
 function Tables() {
   const style = {
     position: 'absolute',
@@ -98,7 +96,7 @@ function Tables() {
     closeLoaderIn5Seconds()
     axios.post('https://insight.roheex.com/getReport', { startDate: value + 'T' + '00:00', endDate: value2 + 'T' + '23:59' }, {
       headers: {
-        'Authorization': `Bearer ${localStorage.getItem('token')}`
+        'Authorization': `Bearer ${localStorage.getItem('Token')}`
       }
     }).then((res) => setReportData(res.data)).catch((error) => console.log("error", error))
 
@@ -170,7 +168,7 @@ function Tables() {
 
     axios.post('https://insight.roheex.com/getProducts', { startDate: value + 'T' + '00:00', endDate: value2 + 'T' + '00:00' }, {
       headers: {
-        'Authorization': `Bearer ${localStorage.getItem('token')}`
+        'Authorization': `Bearer ${localStorage.getItem('Token')}`
       }
     }).then(async res => {
       let productData = await res.data[0].map((x) => {
@@ -190,7 +188,7 @@ function Tables() {
   const closeLoaderIn5Seconds = () => {
     setTimeout(() => {
       setLoader(false);
-    }, 1500);
+    }, 1800);
   };
 
 
@@ -320,7 +318,7 @@ function Tables() {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${localStorage.getItem('token')}`
+        'Authorization': `Bearer ${localStorage.getItem('Token')}`
 
       },
       body: JSON.stringify({ "image": image, "filename": "report.png", "numbers": numbers })
