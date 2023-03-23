@@ -377,7 +377,7 @@ function Tables() {
             <Card className='custom-card-style'>
               <div className='flex'>
 
-                <MDTypography variant="h5" color="white">
+                <MDTypography variant="h5" >
                   From:
                 </MDTypography>
                 {/* <Calendar onChange={onChange} value={value} /> */}
@@ -385,7 +385,7 @@ function Tables() {
               </div>
 
               <div className='flex m-right'>
-                <MDTypography variant="h5" color="white">
+                <MDTypography variant="h5" >
                   To:
                 </MDTypography>
                 {/* <Calendar onChange={onChange2} value={value2} /> */}
